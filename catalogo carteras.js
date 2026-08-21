@@ -190,12 +190,12 @@ window.addToBag = (nombre, marca, precio, imagen) => {
     localStorage.setItem('amore_carrito', JSON.stringify(cart));
     alert("✨ ¡Añadido con éxito!");
     closeAmoreModal();
-    // 👇 MEJORA: shake del icono del carrito
+    //  shake del icono del carrito
     sacudirIconoCarrito();
 };
 
 window.buyNow = (nombre, marca, precio) => {
-    const mensaje = `✨ *NUEVO PEDIDO AMORE* ✨\n\nHola, me interesa adquirir este producto:\n\n▪️ *${nombre}*\n▫️ Colección: ${marca}\n▫️ Precio: ${precio}\n\n¿Tienen disponibilidad? ✨`;
+    const mensaje = ` *NUEVO PEDIDO AMORE* \n\nHola, feliz día! Me interesa este producto:\n\n▪️ *${nombre}*\n▫️ Colección: ${marca}\n▫️ Precio: ${precio}\n\n¿Tienen disponibilidad? `;
     window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
 };
 
@@ -244,9 +244,7 @@ function iniciarScrollRevealCatalogo() {
     cards.forEach(card => observer.observe(card));
 }
 
-/* =========================================================
-   👇 APORTE NUEVO: Shake del icono del carrito
-   ========================================================= */
+
 function sacudirIconoCarrito() {
     if (!document.getElementById('amore-shake-style')) {
         const style = document.createElement('style');

@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalLabel) totalLabel.innerText = `$${formatearPrecio(totalGeneral)}`;
         // El botón de compra se mantiene activo
         asignarEventoCompra();
-        animarItemsCarrito(); // 👈 NUEVO: anima los items al renderizar
+        animarItemsCarrito(); // 
     };
 
     window.changeQty = (i, delta) => {
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             checkoutBtn.onclick = () => {
                 const cart = JSON.parse(localStorage.getItem('amore_carrito')) || [];
                 if (cart.length === 0) return;
-                let mensaje = "Hola, Amore Box. Un gusto saludarlos! Me gustaría hacerles un pedido de:\n\n";
+                let mensaje = "Hola, Amore Box. Feliz día! Me gustaría hacerles un pedido de:\n\n";
                 let totalFinal = 0;
                 cart.forEach(it => {
                     const precioItem = parseFloat(it.precio) || 0;
@@ -83,16 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     totalFinal += sub;
                     mensaje += `•${it.cantidad}x ${it.nombre} - $${formatearPrecio(sub)}\n`;
                 });
-                mensaje += `\n*Total: $${formatearPrecio(totalFinal)}*\n\n¿Me podrían confirmar la disponibilidad para concretar la compra?\n\nMil gracias!!`;
+                mensaje += `\n*Total: $${formatearPrecio(totalFinal)}*\n\n¿Me podrían confirmar la disponibilidad para concretar la compra?\n\nMil gracias!`;
                 window.open(`https://wa.me/584126691482?text=${encodeURIComponent(mensaje)}`, '_blank');
             };
         }
     }
 
-    /* =========================================================
-       👇 APORTE NUEVO: Animación de entrada escalonada
-       Cada item del carrito aparece con fadeInUp con delay
-       ========================================================= */
+
     function animarItemsCarrito() {
         // Inyectamos los estilos solo si no existen
         if (!document.getElementById('amore-cart-anim-style')) {

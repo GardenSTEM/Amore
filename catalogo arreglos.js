@@ -218,18 +218,16 @@ window.addToBag = (nombre, marca, precio, imagen) => {
     localStorage.setItem('amore_carrito', JSON.stringify(cart));
     alert("✨ ¡Añadido con éxito!");
     closeAmoreModal();
-    // 👇 MEJORA: shake del icono del carrito
+    // shake del icono del carrito
     sacudirIconoCarrito();
 };
 
 window.buyNow = (nombre, detalle, precio) => {
-    const mensaje = `✨ *NUEVO PEDIDO DE ARREGLO* ✨\n\nHola Amore, me gustaría comprar:\n\n▪️ *Producto:* ${nombre}\n▫️ Detalle: ${detalle}\n▫️ Cantidad: ${modalQty}\n▫️ Precio unitario: ${precio}`;
+    const mensaje = ` *NUEVO PEDIDO DE ARREGLO* \n\nHola, feliz día, me interesa este arreglo:\n\n▪️ *Producto:* ${nombre}\n▫️ Detalle: ${detalle}\n▫️ Cantidad: ${modalQty}\n▫️ Precio unitario: ${precio}\n\n¿Tienen disponibilidad?`;
     window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
 };
 
-/* =========================================================
-   👇 APORTE NUEVO: Scroll reveal para las tarjetas
-   ========================================================= */
+
 function iniciarScrollRevealCatalogo() {
     if (!document.getElementById('amore-catalog-reveal-style')) {
         const style = document.createElement('style');
@@ -272,9 +270,6 @@ function iniciarScrollRevealCatalogo() {
     cards.forEach(card => observer.observe(card));
 }
 
-/* =========================================================
-   👇 APORTE NUEVO: Shake del icono del carrito
-   ========================================================= */
 function sacudirIconoCarrito() {
     if (!document.getElementById('amore-shake-style')) {
         const style = document.createElement('style');

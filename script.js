@@ -109,12 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
             cart.push({ nombre, marca, precio, cantidad: cant, imagen, tipo: esArreglo ? 'arreglo' : 'cartera' });
             localStorage.setItem('amore_carrito', JSON.stringify(cart));
             actualizarNotificacionCarrito();
-            alert("✨ Añadido a la bolsa");
+            alert("Añadido a la bolsa");
             modal.remove();
         };
 
         document.getElementById('buy-now').onclick = () => {
-            const msg = `✨ *NUEVO PEDIDO AMORE* ✨\n\nHola, me interesa este producto:\n\n▪️ *${nombre}*\n▫️ Detalle: ${marca}\n▫️ Cantidad: ${cant}\n▫️ Precio: ${precio}\n\n📍 _Por favor indícame disponibilidad y pasos a seguir._`;
+            const msg = ` *NUEVO PEDIDO AMORE* \n\nHola, feliz día! Me interesa este producto:\n\n▪️ *${nombre}*\n▫️ Detalle: ${marca}\n▫️ Cantidad: ${cant}\n▫️ Precio: ${precio}\n\n📍 _Por favor, podría indicarme disponibilidad y los pasos a seguir para cotizar._`;
             window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
         };
     }
