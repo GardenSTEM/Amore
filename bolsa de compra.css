@@ -325,7 +325,7 @@ body {
         overflow-x: hidden;
         width: 100%;
         margin: 0;
-        padding: 0;
+        padding: 20px;
     }
 
     .main-header {
@@ -348,7 +348,7 @@ body {
     .header-right {
         display: flex;
         gap: 10px;
-        padding-right: 15px;
+        padding: 15px;
     }
 
     .nav-icon {
