@@ -597,10 +597,15 @@ html,body {
     .info-carousel-container {
         width: 100%;
         overflow: hidden;
-        padding-left: 0;
+        display: flex;
+        padding-left: 15px 0;
     }
 
     .info-carousel-track {
+        display: flex;
+        gap 50px;
+        white-space: nowrap;
+        width: max-content;
         animation: spin 20s infinite linear;
         padding-left: 0;
     }
