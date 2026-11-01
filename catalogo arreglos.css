@@ -13,6 +13,11 @@
     --shadow-hover: 0 12px 24px rgba(91, 65, 49, 0.15);
 }
 
+html,body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 /* ===== Animaciones de entrada ===== */
 @keyframes fadeInUp {
     from {
