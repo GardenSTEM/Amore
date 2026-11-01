@@ -321,25 +321,23 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media screen and (max-width: 768px) {
-    body {
+   body {
         overflow-x: hidden;
         width: 100%;
+        margin: 0;
+        padding: 0;
     }
 
     .main-header {
         width: 100%;
-        flex-direction: row;
         padding: 10px 5px;
-        gap: 10px;
-        justify-content: space-around;
+        margin: 0;
     }
 
     .container {
         width: 100%;
-        max-width: 1200px;
-        margin: 5px auto;
-        justify-content: space-around;
-        align-items: center;
+        margin: 0 auto;
+        padding: 0 10px;
     }
 
     .header-left p {
@@ -363,26 +361,29 @@ body {
         font-size: 0.9rem;
     }
 
-    .cart-container {
-        padding: 10px 15px;
-        width: 100%;
-        margin: 0 auto;
+     .cart-container {
+        padding: 10px 15px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        box-sizing: border-box;
     }
 
     .cart-container h1 {
         font-size: 1.5rem;
         margin-bottom: 15px;
-        padding: 0;
+        padding: 0 !important;
         text-align: center;
+        width: 100%;
     }
 
     .cart-content {
         display: flex;
         flex-direction: column;
         gap: 15px;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+        padding-left: 0;
+        padding-right: 0;
         width: 100%;
+        margin: 0 auto;
     }
 
     .cart-item {
@@ -393,6 +394,7 @@ body {
         padding: 15px 0;
         gap: 15px;
         width: 100%;
+        margin: 0 auto;
     }
 
     .cart-item:hover,
@@ -406,15 +408,12 @@ body {
         align-items: center;
         gap: 10px;
         width: 100%;
+        text-align: center;
     }
 
-    .car-item-info h3 {
-        font-family: var (var(--fuente-elegante));
-        font-size: 1.1rem;
-        margin: 0 0 15px 0;
-        letter-spacing: 1px;
-        color: var(--marron-amore);
-        font-weight: 700;
+    .cart-item-info h3 {
+        text-align: center;
+        width: 100%;
     }
 
     .quantity-selector {
@@ -482,7 +481,7 @@ body {
         color: var(--negro-precio);
     }
 
-    .cart-total {
+     .cart-total {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -490,7 +489,8 @@ body {
         padding-left: 0;
         padding-right: 0;
         width: 100%;
-        margin-top: 20px;
+        margin: 20px auto 0 auto;
+        box-sizing: border-box;
     }
 
     .cart-total h2 {
@@ -512,6 +512,7 @@ body {
         margin: 20px auto 30px auto;
         display: block;
     }
+    
 
     .btn-primary:hover,
     .btn-primary:active {
