@@ -321,7 +321,7 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media screen and (max-width: 768px) {
-   body {
+    body {
         overflow-x: hidden;
         width: 100%;
         margin: 0;
@@ -345,11 +345,6 @@ body {
         padding-left: 5px;
     }
 
-    .header-left p:hover,
-    .header-left p:active {
-        transform: translateX(2px);
-    }
-
     .header-right {
         display: flex;
         gap: 10px;
@@ -361,7 +356,7 @@ body {
         font-size: 0.9rem;
     }
 
-     .cart-container {
+    .cart-container {
         padding: 10px 15px;
         width: 100%;
         margin: 0 auto;
@@ -370,7 +365,7 @@ body {
 
     .cart-container h1 {
         font-size: 1.5rem;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         padding: 0;
         text-align: center;
         width: 100%;
@@ -386,6 +381,7 @@ body {
         align-items: center;
     }
 
+
     .cart-item {
         display: flex;
         flex-direction: column;
@@ -396,6 +392,7 @@ body {
         width: 100%;
         max-width: 350px;
         margin: 0 auto;
+        background-color: rgba(243, 212, 185, 0.08);
         border-radius: 12px;
     }
 
@@ -405,17 +402,19 @@ body {
     }
 
     .cart-item-image img {
-        width: 20px;
+        width: 120px;
         height: 120px;
         object-fit: cover;
         border-radius: 8px;
         margin: 0 auto;
+        box-shadow: 0 4px 10px rgba(91, 65, 49, 0.1);
     }
 
     .cart-item-info {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         gap: 10px;
         width: 100%;
         text-align: center;
@@ -429,7 +428,14 @@ body {
     }
 
     .quantity-selector {
-        margin: 0 auto 10px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 5px auto;
+        padding: 5px 15px;
+        background-color: rgba(243, 212, 185, 0.2);
+        border-radius: 8px;
     }
 
     .quantity-selector button {
@@ -441,14 +447,6 @@ body {
         color: var(--marron-amore);
         font-size: 1.2rem;
         cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .quantity-selector button:hover,
-    .quantity-selector button:active {
-        background-color: #f8bd79;
-        color: var(--marron-amore);
-        transform: scale(1.08);
     }
 
     .quantity-selector input {
@@ -458,14 +456,6 @@ body {
         font-family: var(--fuente-limpia);
         background: transparent;
         font-weight: 600;
-        -moz-appearance: textfield;
-        appearance: textfield;
-    }
-
-    .quantity-selector input::-webkit-outer-spin-button,
-    .quantity-selector input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
     }
 
     .btn-remove {
@@ -474,60 +464,51 @@ body {
         color: var(--gris-info);
         font-family: var(--fuente-limpia);
         cursor: pointer;
-        font-size: 0.8rem;
-        padding: 5px 8px;
-        transition: var(--transition);
-        border-radius: 4px;
-    }
-
-    .btn-remove:hover,
-    .btn-remove:active {
-        color: #c0392b;
-        background-color: rgba(192, 57, 43, 0.08);
+        font-size: 0.9rem;
+        padding: 5px 10px;
+        display: inline-block;
+        margin: 0 auto;
     }
 
     .item-price {
         font-family: var(--fuente-elegante);
         font-weight: 700;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: var(--negro-precio);
+        text-align: center;
+        width: 100%;
     }
 
-     .cart-total {
+    .cart-total {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding-left: 0;
-        padding-right: 0;
+        padding: 20px 0;
         width: 100%;
         margin: 20px auto 0 auto;
         box-sizing: border-box;
     }
 
     .cart-total h2 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+        text-align: center;
         width: 100%;
     }
 
     .cart-total .price {
-        font-size: 1.0rem;
+        font-size: 1.2rem;
+        text-align: center;
+        justify-content: center;
     }
 
-      .btn-primary {
+    .btn-primary {
         width: 100%;
         max-width: 300px;
         font-size: 1.1rem;
         padding: 14px;
         margin: 20px auto 30px auto;
         display: block;
-    }
-    
-
-    .btn-primary:hover,
-    .btn-primary:active {
-        transform: translateY(2px);
     }
 }
