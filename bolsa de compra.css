@@ -384,7 +384,8 @@ body {
 
     .cart-item {
         display: flex;
-        flex-direction: column;
+        flex-direction: grid;
+        grid-template-columns: 65px 1fr auto;
         align-items: center;
         text-align: center;
         padding: 20px 10px;
