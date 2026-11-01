@@ -390,7 +390,7 @@ html,body {
 .Conditions {
     justify-content: space-around;
     align-items: center;
-    padding-left: 20px;
+    padding: 20px 20px;
 }
 
 .Conditions-flowers-section,
@@ -597,23 +597,21 @@ html,body {
     .info-carousel-container {
         width: 100%;
         overflow: hidden;
-        display: flex;
-        padding-left: 15px 0;
     }
 
     .info-carousel-track {
-        display: flex;
-        gap 50px;
-        white-space: nowrap;
-        width: max-content;
         animation: spin 20s infinite linear;
-        padding-left: 0;
+    }
+
+    .info-carousel-track[aria-hidden="true"] {
+        display: flex;
     }
 
     @keyframes spin {
         from { transform: translateX(0); }
         to { transform: translateX(-100%); }
     }
+
 
     /* Best sellers móvil */
     .best-sellers {
