@@ -13,6 +13,11 @@
     --shadow-hover: 0 12px 24px rgba(91, 65, 49, 0.15);
 }
 
+html,body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 /* ===== Animaciones de entrada ===== */
 @keyframes fadeInUp {
     from {
@@ -527,13 +532,19 @@
     body {
         overflow-x: hidden;
         width: 100%;
+        margin: 0;
+        padding: 0;
     }
 
     /* Header móvil */
     .main-header {
         width: 100%;
-        flex-direction: row;
-        padding: 5px 10px;
+        padding: 5px 15px;
+    }
+
+    .main-header .container {
+        width: 100%;
+        padding: 0 10px;
     }
 
     .logo-nav {
@@ -541,17 +552,16 @@
     }
 
     .header-right {
-        display: flex;
         gap: 10px;
     }
 
-    .nav-icon {
-        width: 36px;
-        height: 36px;
-        padding: 8px;
+    /* Categorías móvil */
+    .categories {
+        padding: 40px 15px;
+        gap: 50px;
+        align-items: center;
     }
 
-    /* Categorías móvil */
     .categoryText h2 {
         font-size: 2.0rem;
     }
@@ -559,36 +569,40 @@
     .category-row,
     .category-row-reverse {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
         text-align: center;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding-left: 0;
+        padding-right: 0;
         width: 100%;
+        margin: 0 auto;
+    }
+
+    .categoryText {
+        padding-left: 0;
+        align-items: center;
+    }
+
+    .categoryImage {
+        width: 100%;
+        justify-content: center;
     }
 
     .categoryImage img {
         width: 100%;
+        max-width: 350px;
         height: auto;
-        box-shadow: 0 6px 12px rgba(91, 65, 49, 0.1);
-    }
-
-    .categoryImage img:hover,
-    .categoryImage img:active {
-        transform: scale(1.01);
     }
 
     /* Carrusel info móvil */
     .info-carousel-container {
         width: 100%;
         overflow: hidden;
+        padding-left: 0;
     }
 
     .info-carousel-track {
         animation: spin 20s infinite linear;
-    }
-
-    .info-carousel-track[aria-hidden="true"] {
-        display: flex;
+        padding-left: 0;
     }
 
     @keyframes spin {
@@ -596,88 +610,72 @@
         to { transform: translateX(-100%); }
     }
 
-    /* Botones móvil */
-    .btn-ver {
-        width: auto;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 20px;
-        font-size: 1.1rem;
-    }
-
     /* Best sellers móvil */
     .best-sellers {
-        padding-left: 10px;
+        padding: 40px 15px 20px 15px;
+        text-align: center;
     }
 
     .best-sellers h2 {
         text-align: center;
         padding-left: 0;
-        padding-bottom: 20px;
         font-size: 2.2rem;
+        display: block;
     }
 
     .products-grid {
         grid-template-columns: 1fr 1fr;
         gap: 15px;
-        text-align: center;
-        padding-left: 5px;
+        padding-left: 0;
+        padding-right: 0;
         width: 100%;
+        margin: 0 auto;
     }
 
-    .product-card:hover,
-    .product-card:active {
-        transform: translateY(-5px);
+    .product-card {
+        height: auto;
+        width: 100%;
+        margin: 0 auto;
     }
 
-    .product-card img {
-        box-shadow: 0 6px 12px rgba(91, 65, 49, 0.1);
+    .product-info {
+        margin-left: 0;
+        padding: 10px 5px;
+        text-align: center;
     }
 
     /* Conditions móvil */
     .Conditions {
-        padding-left: 10px;
+        padding: 0 15px;
+        text-align: center;
     }
 
     .Conditions h2 {
         font-size: 1.8rem;
-        text-align: left;
-        margin-bottom: 0;
+        text-align: center;
+        display: block;
         padding-left: 0;
     }
 
     .Conditions-flowers-container,
     .Conditions-bags-container {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: 1fr;
         width: 100%;
-        padding: 0 10px;
-    }
-
-    .Conditions-bubble {
-        padding: 12px;
-    }
-
-    .Conditions-bubble:hover,
-    .Conditions-bubble:active {
-        transform: translateY(-2px);
+        padding: 0;
     }
 
     /* Footer móvil */
     .footer-content {
-        gap: 20px;
+        gap: 15px;
         flex-direction: column;
         justify-content: center;
         text-align: center;
+        padding: 20px 10px;
     }
 
-    .footer_left p {
+    .footer_left,
+    .footer_right {
+        padding: 0;
         text-align: center;
-    }
-
-    .footer_right p {
-        padding-left: 20px;
-        padding-right: 0;
-        text-align: center;
-        font-size: 0.7rem;
     }
 }
