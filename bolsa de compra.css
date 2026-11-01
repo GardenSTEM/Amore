@@ -393,8 +393,6 @@ body {
         width: 100%;
         max-width: 350px;
         margin: 0 auto;
-        background-color: rgba(243, 212, 185, 0.08);
-        border-radius: 12px;
     }
 
     .cart-item:hover,
