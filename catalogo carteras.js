@@ -4,7 +4,7 @@ const cap = (t) => t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : ""
 document.addEventListener('DOMContentLoaded', () => {
     iniciarScrollRevealCatalogo(); // 👈 NUEVO: scroll reveal
 
-    // --- LÓGICA DEL MENÚ DE MARCAS (DROPDOWN) ---
+    // LÓGICA DEL MENÚ DE MARCAS (DROPDOWN)
     const btnMarcas = document.getElementById('btn-marcas');
     const menuMarcas = document.getElementById('menu-marcas');
     if (btnMarcas && menuMarcas) {
@@ -18,14 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-// --- FUNCIÓN PARA DAR FORMATO DE MILES ---
+// FUNCIÓN PARA DAR FORMATO DE MILES 
 const formatearPrecio = (num) => {
     return num.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-/* =========================================================
-   👇 APORTE NUEVO: Corrección de rutas de imágenes
-   ========================================================= */
+// APORTE NUEVO: Corrección de rutas de imágenes 
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
     let limpia = ruta;
@@ -34,9 +32,7 @@ function limpiarRutaImagen(ruta) {
     return limpia;
 }
 
-/* =========================================================
-   👇 APORTE NUEVO: Fallback robusto de imágenes
-   ========================================================= */
+// Fallback robusto de imágenes
 function manejarErrorImagen(img, rutaOriginal) {
     const intentos = img.dataset.intentos || 0;
     if (intentos === 0) {
@@ -48,7 +44,7 @@ function manejarErrorImagen(img, rutaOriginal) {
     }
 }
 
-// --- FUNCIÓN PARA ORDENAR POR PRECIO ---
+// FUNCIÓN PARA ORDENAR POR PRECIO 
 window.sortByPrice = function(order) {
     const grid = document.querySelector('.catalogo-grid');
     const cards = Array.from(grid.querySelectorAll('.product-card'));
@@ -59,7 +55,7 @@ window.sortByPrice = function(order) {
         return order === 'low' ? priceA - priceB : priceB - priceA;
     });
     grid.innerHTML = "";
-    // 👇 MEJORA: animación escalonada al reordenar
+    // animación escalonada al reordenar
     cards.forEach((card, i) => {
         card.style.opacity = "0";
         card.style.transform = "translateY(20px)";
@@ -72,10 +68,10 @@ window.sortByPrice = function(order) {
     });
 };
 
-// --- FUNCIÓN PARA FILTRAR POR MARCA ---
+// FUNCIÓN PARA FILTRAR POR MARCA 
 window.filterByBrand = function(brand) {
     const cards = document.querySelectorAll('.product-card');
-    // 👇 MEJORA: animación suave al filtrar
+    // animación suave al filtrar
     cards.forEach((card, i) => {
         const mostrar = (brand === 'all' || card.getAttribute('data-brand') === brand);
         if (mostrar) {
@@ -91,13 +87,13 @@ window.filterByBrand = function(brand) {
     });
 };
 
-// --- FUNCIÓN DEL MODAL DE PRODUCTO ---
+// FUNCIÓN DEL MODAL DE PRODUCTO 
 let modalQty = 1;
 window.openModal = function(nombre, marca, precio, imagen) {
     const modalRoot = document.getElementById('amore-modal-root');
     modalQty = 1;
     
-    // 👇 MEJORA: usar la función centralizada de limpieza
+    // función centralizada de limpieza
     const rutaLimpia = limpiarRutaImagen(imagen);
 
     modalRoot.innerHTML = `
@@ -199,9 +195,9 @@ window.buyNow = (nombre, marca, precio) => {
     window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
 };
 
-/* =========================================================
-   👇 APORTE NUEVO: Scroll reveal para las tarjetas
-   ========================================================= */
+
+// Scroll reveal para las tarjetas
+
 function iniciarScrollRevealCatalogo() {
     if (!document.getElementById('amore-catalog-reveal-style')) {
         const style = document.createElement('style');
