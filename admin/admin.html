@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es-VE">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amorebox · Panel de Administración</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="../Logo/Logo - Gift Amore.png">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ==================== VISTA: LOGIN ==================== -->
+<div id="vista-login" class="vista visible">
+    <div class="login-card">
+        <img src="../Logo/Logo_1.png" alt="Amorebox" class="login-logo">
+        <h1>Panel de Administración</h1>
+        <p class="login-sub">Gestión de carteras y arreglos florales</p>
+
+        <form id="form-login">
+            <label for="login-email">Correo</label>
+            <input type="email" id="login-email" placeholder="tu@correo.com" required autocomplete="username">
+            <label for="login-pass">Contraseña</label>
+            <input type="password" id="login-pass" placeholder="••••••••" required autocomplete="current-password">
+            <p id="login-error" class="login-error" hidden></p>
+            <button type="submit" class="btn btn-primario btn-block" id="btn-login">Iniciar sesión</button>
+        </form>
+
+        <a href="../index.html" class="login-volver">← Volver a la tienda</a>
+    </div>
+</div>
+
+<!-- ==================== VISTA: DASHBOARD ==================== -->
+<div id="vista-dashboard" class="vista">
+    <header class="admin-header">
+        <div class="admin-header-inner">
+            <div class="admin-brand">
+                <img src="../Logo/Logo_1.png" alt="Amorebox" class="admin-logo">
+                <div>
+                    <h1>Panel de Administración</h1>
+                    <p id="admin-email-sub">Inventario y catálogo</p>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <a class="btn btn-fantasma" href="../index.html">Ver tienda</a>
+                <button class="btn btn-fantasma" id="btn-cerrar-sesion">Cerrar sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <!-- PESTAÑAS PRODUCTOS / PEDIDOS -->
+        <div class="admin-tabs">
+            <button class="admin-tab activo" id="tab-productos">Productos</button>
+            <button class="admin-tab" id="tab-pedidos">Pedidos <span id="pedidos-badge" class="tab-badge" hidden>0</span></button>
+        </div>
+
+        <!-- ============ PESTAÑA PRODUCTOS (todo lo existente) ============ -->
+        <div id="pestana-productos">
+        <!-- ESTADÍSTICAS -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-num" id="stat-total">–</span>
+                <span class="stat-label">Productos totales</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="stat-carteras">–</span>
+                <span class="stat-label">Carteras</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="stat-arreglos">–</span>
+                <span class="stat-label">Arreglos florales</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="stat-agotados">–</span>
+                <span class="stat-label">Agotados (stock 0)</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="stat-valor">–</span>
+                <span class="stat-label">Valor del inventario</span>
+            </div>
+        </section>
+
+        <!-- TOOLBAR -->
+        <section class="toolbar">
+            <input type="text" id="buscador" class="input-buscar" placeholder="Buscar por nombre o marca...">
+            <div class="toolbar-filtros">
+                <button class="chip activo" data-filtro="todos">Todos</button>
+                <button class="chip" data-filtro="cartera">Carteras</button>
+                <button class="chip" data-filtro="arreglo">Arreglos</button>
+                <button class="chip" data-filtro="stock-bajo">Stock bajo</button>
+            </div>
+            <button class="btn btn-primario" id="btn-nuevo">+ Nuevo producto</button>
+        </section>
+
+        <!-- TABLA -->
+        <section class="tabla-wrap">
+            <table class="tabla-productos">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Marca</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Destacado</th>
+                        <th class="th-acciones">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                    <tr><td colspan="7" class="cargando">Cargando inventario...</td></tr>
+                </tbody>
+            </table>
+        </section>
+        </div><!-- /pestana-productos -->
+
+        <!-- ============ PESTAÑA PEDIDOS ============ -->
+        <div id="pestana-pedidos" hidden>
+            <div class="pedidos-toolbar">
+                <h2 class="pedidos-titulo">Pedidos por WhatsApp</h2>
+                <button class="btn btn-fantasma btn-chico" id="btn-refrescar-pedidos">↻ Refrescar</button>
+            </div>
+            <section class="tabla-wrap pedidos-wrap">
+                <table class="tabla-productos tabla-pedidos">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-pedidos-body">
+                        <tr><td colspan="4" class="cargando">Cargando pedidos...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- ==================== MODAL: FORMULARIO PRODUCTO ==================== -->
+<div class="modal-overlay" id="modal-form" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-head">
+            <h2 id="modal-form-titulo">Nuevo producto</h2>
+            <button class="modal-cerrar" data-cerrar-modal>&times;</button>
+        </div>
+        <form id="form-producto">
+            <input type="hidden" id="p-id">
+            <div class="form-grid">
+                <div class="form-campo span-1">
+                    <label for="p-categoria">Categoría *</label>
+                    <select id="p-categoria" required>
+                        <option value="arreglo">Arreglo floral</option>
+                        <option value="cartera">Cartera</option>
+                    </select>
+                </div>
+                <div class="form-campo span-1">
+                    <label for="p-marca">Marca</label>
+                    <input type="text" id="p-marca" placeholder="Ej: Coach, Steve Madden…">
+                </div>
+                <div class="form-campo span-2">
+                    <label for="p-nombre">Nombre *</label>
+                    <input type="text" id="p-nombre" required maxlength="120" placeholder="Nombre del producto">
+                </div>
+                <div class="form-campo span-2">
+                    <label for="p-descripcion">Descripción</label>
+                    <textarea id="p-descripcion" rows="3" placeholder="Descripción visible en el catálogo"></textarea>
+                </div>
+                <div class="form-campo span-1">
+                    <label for="p-precio">Precio ($) — vacío = «consultar»</label>
+                    <input type="number" id="p-precio" min="0" step="0.01" placeholder="Ej: 60">
+                </div>
+                <div class="form-campo span-1">
+                    <label for="p-stock">Stock disponible *</label>
+                    <input type="number" id="p-stock" min="0" step="1" value="1" required>
+                </div>
+                <div class="form-campo span-2">
+                    <label for="p-imagen-url">Imagen — URL o subida</label>
+                    <div class="imagen-fila">
+                        <input type="text" id="p-imagen-url" placeholder="https://… o ruta relativa">
+                        <input type="file" id="p-imagen-file" accept="image/*">
+                    </div>
+                    <p class="form-help">Puedes pegar una URL, subir un archivo, o ambos (la subida pisa la URL).</p>
+                </div>
+                <div class="form-campo span-2 checkbox-fila">
+                    <label class="checkbox">
+                        <input type="checkbox" id="p-destacado">
+                        <span>Mostrar en «Lo más vendido» de la página principal</span>
+                    </label>
+                </div>
+            </div>
+            <p id="form-error" class="login-error" hidden></p>
+            <div class="form-pie">
+                <button type="button" class="btn btn-fantasma" data-cerrar-modal>Cancelar</button>
+                <button type="submit" class="btn btn-primario" id="btn-guardar">Guardar producto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL: CONFIRMAR BORRADO ==================== -->
+<div class="modal-overlay" id="modal-borrar" hidden>
+    <div class="modal modal-chico" role="dialog" aria-modal="true">
+        <div class="modal-head">
+            <h2>Eliminar producto</h2>
+            <button class="modal-cerrar" data-cerrar-modal>&times;</button>
+        </div>
+        <div class="borrar-body">
+            <p>¿Seguro que quieres eliminar <strong id="borrar-nombre">este producto</strong> del inventario?</p>
+            <p class="form-help">Esta acción no se puede deshacer.</p>
+            <div class="form-pie">
+                <button type="button" class="btn btn-fantasma" data-cerrar-modal>Cancelar</button>
+                <button type="button" class="btn btn-peligro" id="btn-confirmar-borrar">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-api.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

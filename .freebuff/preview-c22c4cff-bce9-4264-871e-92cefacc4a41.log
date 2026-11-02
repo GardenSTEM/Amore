@@ -1,0 +1,5 @@
+
+> amorebox@1.0.0 dev
+> node preview-server.js
+
+Amorebox preview server escuchando en http://127.0.0.1:0
