@@ -51,20 +51,29 @@ async function eliminarProducto(id) {
     return true;
 }
 
-/* ------------------------- STORAGE ------------------------ */
+/* ------------------------ CLOUDINARY ---------------------- */
 
-// Sube una imagen al bucket "productos" y devuelve su URL pública.
-// El admin debe estar autenticado (las políticas de storage lo exigen).
+// El servidor valida la sesión y firma la subida; el secreto nunca llega al navegador.
 async function subirImagen(file, productoId) {
-    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-    const ruta = `${productoId}.${ext}`;
-    const { error } = await _sb.storage.from('productos').upload(ruta, file, {
-        cacheControl: '3600',
-        upsert: true
+    const { data, error } = await _sb.auth.getSession();
+    if (error) throw error;
+    if (!data.session) throw new Error('Inicia sesión para subir imágenes.');
+
+    const response = await fetch('/api/cloudinary-upload', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${data.session.access_token}`,
+            'Content-Type': file.type,
+            'X-Product-Id': productoId
+        },
+        body: file
     });
-    if (error) { console.error('subirImagen:', error.message); throw error; }
-    const { data } = _sb.storage.from('productos').getPublicUrl(ruta);
-    return data.publicUrl;
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || `Error subiendo imagen (HTTP ${response.status}).`);
+    if (!result.url || !result.url.startsWith('https://res.cloudinary.com/')) {
+        throw new Error('Cloudinary no devolvió una URL válida.');
+    }
+    return result.url;
 }
 
 /* ------------------------ AUTENTICACIÓN -------------------- */

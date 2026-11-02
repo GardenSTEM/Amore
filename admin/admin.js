@@ -14,7 +14,7 @@ let canalPedidos = null;
 
 // El panel vive en /admin/, así que una ruta relativa como 'Carteras/...'
 // se resolvería contra admin/Carteras/ (404). Se resuelve contra la raíz.
-// URLs absolutas (http/https y las de Storage de Supabase) pasan intactas.
+// URLs absolutas (incluidas las de Cloudinary) pasan intactas.
 function urlImagenPanel(ruta) {
     const v = (ruta || '').trim();
     if (!v) return '';
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (typeof _sb === 'undefined') {
         document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif">' +
             '<h2>Supabase sin configurar</h2>' +
-            '<p>Edita <code>js/supabase-config.js</code> con tu Project URL y anon key.</p></div>';
+            '<p>Configura SUPABASE_URL y SUPABASE_ANON_KEY en el archivo <code>.env</code>.</p></div>';
         return;
     }
 
@@ -182,6 +182,7 @@ function abrirFormNuevo() {
     document.getElementById('form-producto').reset();
     document.getElementById('p-id').value = '';
     document.getElementById('p-stock').value = '1';
+    document.getElementById('p-imagen-file').value = '';
     document.getElementById('form-error').hidden = true;
     abrirModal('modal-form');
 }
@@ -198,7 +199,6 @@ function abrirFormEditar(id) {
     document.getElementById('p-marca').value = p.marca || '';
     document.getElementById('p-precio').value = p.precio ?? '';
     document.getElementById('p-stock').value = p.stock;
-    document.getElementById('p-imagen-url').value = p.imagen_url || '';
     document.getElementById('p-imagen-file').value = '';
     document.getElementById('p-destacado').checked = !!p.destacado;
     document.getElementById('form-error').hidden = true;
@@ -235,22 +235,17 @@ async function manejarGuardarProducto(e) {
 
     try {
         const file = document.getElementById('p-imagen-file').files[0];
-        const urlManual = document.getElementById('p-imagen-url').value.trim();
 
         if (esEdicion) {
-            // EDITAR: la subida usa el id existente como nombre de archivo
-            producto.imagen_url = file ? await subirImagen(file, id) : urlManual;
+            const actual = productos.find(p => p.id === id);
+            producto.imagen_url = file ? await subirImagen(file, id) : actual?.imagen_url || '';
             await actualizarProducto(id, producto);
             toast('✅ Producto actualizado');
         } else {
-            // CREAR: se necesita el UUID antes de subir la imagen al bucket
+            const creado = await crearProducto({ ...producto, imagen_url: '' });
             if (file) {
-                const creado = await crearProducto({ ...producto, imagen_url: '' });
                 const url = await subirImagen(file, creado.id);
                 await actualizarProducto(creado.id, { imagen_url: url });
-            } else {
-                producto.imagen_url = urlManual;
-                await crearProducto(producto);
             }
             toast('✅ Producto creado');
         }

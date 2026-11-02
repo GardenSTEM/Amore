@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.productos (
     descripcion    TEXT NOT NULL DEFAULT '',
     marca          TEXT,
     precio         NUMERIC(10,2) CHECK (precio IS NULL OR precio >= 0),
-    imagen_url     TEXT NOT NULL DEFAULT '',
+    imagen_url     TEXT NOT NULL DEFAULT '', -- URL pública optimizada de Cloudinary
     stock          INTEGER NOT NULL DEFAULT 1 CHECK (stock >= 0),
     destacado      BOOLEAN NOT NULL DEFAULT false,
     created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -93,36 +93,6 @@ BEGIN
     END IF;
 END $$;
 
--- 7) STORAGE: bucket público para imágenes de productos
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('productos', 'productos', true)
-ON CONFLICT (id) DO NOTHING;
-
-DROP POLICY IF EXISTS "Imagenes de productos lectura publica" ON storage.objects;
-CREATE POLICY "Imagenes de productos lectura publica"
-    ON storage.objects FOR SELECT
-    USING (bucket_id = 'productos');
-
-DROP POLICY IF EXISTS "Imagenes de productos escritura autenticada" ON storage.objects;
-CREATE POLICY "Imagenes de productos escritura autenticada"
-    ON storage.objects FOR INSERT
-    TO authenticated
-    WITH CHECK (bucket_id = 'productos');
-
-DROP POLICY IF EXISTS "Imagenes de productos actualizacion autenticada" ON storage.objects;
-CREATE POLICY "Imagenes de productos actualizacion autenticada"
-    ON storage.objects FOR UPDATE
-    TO authenticated
-    USING (bucket_id = 'productos')
-    WITH CHECK (bucket_id = 'productos');
-
-DROP POLICY IF EXISTS "Imagenes de productos borrado autenticado" ON storage.objects;
-CREATE POLICY "Imagenes de productos borrado autenticado"
-    ON storage.objects FOR DELETE
-    TO authenticated
-    USING (bucket_id = 'productos');
-
--- 8) LISTO.
---    Nota: la URL pública de cada imagen la escribe el panel de administración
---    (js/supabase-api.js) con supabase.storage.from('productos').getPublicUrl(),
---    que es el método oficial y siempre genera la URL correcta de tu proyecto.
+-- 7) LISTO.
+--    imagen_url almacena la URL optimizada que devuelve Cloudinary.
+--    Los buckets de Supabase Storage de instalaciones antiguas se dejan intactos.
