@@ -312,7 +312,7 @@ html,body {
     font-weight: 700;
     text-align: left;
     margin: 0 auto;
-    padding-left: 10px;
+    padding-left: 5px;
     padding-bottom: 20px;
     display: inline-block;
 }
@@ -386,6 +386,116 @@ html,body {
     margin-left: 10px;
 }
 
+/* ==== ARREGLOS DE TIENDA ===== */
+
+.arreglos-tienda {
+    padding: 60px 10% 40px 70px;
+    background-color: #ffffff;
+}
+
+.arreglos-tienda h2 {
+    font-size: 2.8rem;
+    font-family: var(--fuente-elegante);
+    color: var(--marron-amore);
+    font-weight: 700;
+    text-align: left;
+    margin: 0 auto;
+    padding-left: 5px;
+    padding-bottom: 20px;
+    display: inline-block;
+}
+
+.arreglos-tienda-subtitle {
+    font-size: 1.3rem;
+    color: var(--gris-info);
+    font-family: var(--fuente-elegante);
+    margin: 0 0 30px 5px;
+    max-width: 700px;
+}
+
+.tienda-filas {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 80px 80px;
+    max-width: 1100px;
+    padding-left: 20px;
+
+}
+
+.tienda-fila {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.tienda-fila:hover,
+.tienda-fila:active {
+    transform: translateX(5px);
+    background-color: rgba(243, 212, 185, 0.08);
+}
+
+/* Imagen con proporción 3:4 (vertical) */
+.tienda-fila-imagen {
+    flex-shrink: 0;
+    width: 160px;
+    aspect-ratio: 3/4; 
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
+}
+
+.tienda-fila:hover .tienda-fila-imagen,
+.tienda-fila:active .tienda-fila-imagen {
+    box-shadow: var(--shadow-hover);
+}
+
+.tienda-fila-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: var(--transition);
+}
+
+.tienda-fila:hover .tienda-fila-imagen img,
+.tienda-fila:active .tienda-fila-imagen img {
+    transform: scale(1.05);
+}
+
+.tienda-fila-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.tienda-fila-info h3 {
+    font-family: var(--fuente-elegante);
+    font-size: 1.3rem;
+    color: var(--marron-amore);
+    font-weight: 700;
+    margin: 0;
+    transition: var(--transition);
+}
+
+.tienda-fila:hover .tienda-fila-info h3,
+.tienda-fila:active .tienda-fila-info h3 {
+    color: #f8bd79;
+}
+
+.tienda-fila-info .price {
+    font-size: 1.2rem;
+    color: var(--negro-precio);
+    font-weight: 700;
+    margin: 0;
+}
+
 /* ===== CONDITIONS ===== */
 .Conditions {
     justify-content: space-around;
@@ -400,14 +510,11 @@ html,body {
 
 .Conditions h2 {
     font-size: 2.8rem;
+    font-family: var(--fuente-elegante);
     color: var(--marron-amore);
     font-weight: 700;
-    font-family: var(--fuente-elegante);
-    text-align: center;
-    margin-top: 50px;
-    padding-bottom: 10px;
+    margin: 0 0 10px 0;
     padding-left: 5px;
-    display: inline-block;
 }
 
 .Conditions-flowers-title,
@@ -645,6 +752,59 @@ html,body {
         margin-left: 0;
         padding: 10px 5px;
         text-align: center;
+    }
+
+    /* Arreglos tienda móvil*/
+
+    
+    .arreglos-tienda {
+    padding: 40px 15px 20px 15px;
+    text-align: center;
+    }
+
+    .arreglos-tienda h2 {
+    font-size: 2.2rem;
+    padding-left: 0;
+    display: block;
+    }
+
+    .arreglos-tienda-subtitle {
+    margin: 0 auto 30px auto;
+    font-size: 0.95rem;
+    }
+
+    .tienda-filas {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding-left: 0;
+    width: 100%;
+    margin: 0 auto;
+    }
+
+    .tienda-fila {
+    padding: 10px;
+    gap: 20px;
+    justify-content: flex-start;
+    text-align: left;
+    }
+
+    .tienda-fila:hover,
+    .tienda-fila:active {
+    transform: translateX(3px);
+    }
+
+
+    .tienda-fila-imagen {
+    width: 110px;
+    aspect-ratio: 3/4;
+    }
+
+    .tienda-fila-info h3 {
+    font-size: 1.1rem;
+    }
+
+    .tienda-fila-info .price {
+    font-size: 1.1rem;
     }
 
     /* Conditions móvil */
