@@ -259,7 +259,7 @@ window.addToBag = (nombre, marca, precio, imagen) => {
     localStorage.setItem('amore_carrito', JSON.stringify(cart));
     
     // Mostrar notificación elegante en lugar de alert
-    mostrarNotificacion("¡Añadido con éxito!");
+    mostrarNotificacion("¡Añadido a la bolsa!");
     
     closeAmoreModal();
     sacudirIconoCarrito();
