@@ -13,6 +13,15 @@
     --shadow-hover: 0 12px 24px rgba(91, 65, 49, 0.15);
 }
 
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* ===== Animaciones de entrada ===== */
 @keyframes fadeInUp {
     from {
@@ -39,6 +48,20 @@
         opacity: 1;
         transform: translateX(0);
     }
+}
+
+body {
+    background-color: #ffffff;
+    font-family: var(--fuente-elegante);
+    color: var(--marron-amore);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
 }
 
 /* ===== HEADER ===== */
@@ -303,6 +326,8 @@
     max-width: 1200px;
     margin: 20px auto;
     padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .catalogo-header {
@@ -399,7 +424,7 @@
 }
 
 /* ===== FOOTER ===== */
-.footer-content {
+footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
