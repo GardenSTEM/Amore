@@ -4,8 +4,8 @@ const WHATSAPP_NUMERO = "584126691482";
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
     let limpia = ruta.trim();
-    limpia = limpia.replace(/2026110/g, '20260110'); // Corrige error común de fecha
-    limpia = limpia.replace(/([^:])\/\//g, "$1/"); // Elimina dobles slashes
+    limpia = limpia.replace(/2026110(?!\d)/g, '20260110');
+    limpia = limpia.replace(/([^:])\/\//g, "$1/");
     return limpia;
 }
 
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     moverInfoBar();
     rotarMasVendidos();
 
+// modal para los arreglos mas vendidos
     const productosIndex = document.querySelectorAll('.product-card');
     productosIndex.forEach(card => {
         card.style.cursor = 'pointer';
@@ -42,6 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
             abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
         });
     });
+
+    // modal para arreglos de tienda
+
+    const arreglosTienda = document.querySelectorAll('.tienda-fila');
+    arreglosTienda.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+            const nombre = card.querySelector('h3')?.innerText || "";
+            const precioTexto = card.querySelector('.price')?.innerText || "$0";
+            const imagen = card.querySelector('img')?.src || "";
+            const precioNumerico = limpiarPrecio(precioTexto);
+            const marca = "Arreglo de tienda"; // Son exclusivos de la tienda
+            
+            abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
+        });
+    });
+
 
     function abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen) {
         const existing = document.getElementById('amore-modal-root');
