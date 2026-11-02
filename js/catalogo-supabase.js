@@ -8,16 +8,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const esIndex = !document.querySelector('.catalogo-grid');
     const grid = document.querySelector('.catalogo-grid');
-    const contenedorMasVendidos = document.querySelector('.products-grid');
+    const contenedor = esIndex ? document.querySelector('.products-grid') : grid;
 
     // Categoría según la página: catálogo carteras / catálogo arreglos / index
     let categoria = null;
     if (grid && location.pathname.toLowerCase().includes('carteras')) categoria = 'cartera';
     else if (grid) categoria = 'arreglo';
 
-    // El archivo config debe definir _sb; si no, nos quedamos con el estático.
+    mostrarEstadoCatalogo(contenedor, 'Cargando productos...');
+
     if (typeof _sb === 'undefined') {
-        console.warn('[Amorebox] Supabase sin configurar: se muestra el contenido estático.');
+        console.error('[Amorebox] Supabase no está configurado; no se muestran imágenes locales.');
+        mostrarEstadoCatalogo(contenedor, 'No se pudo conectar con el catálogo. Inténtalo más tarde.');
         return;
     }
 
@@ -43,19 +45,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     } catch (err) {
-        // Diseño intacto: si la BD falla, el catálogo estático permanece.
-        console.warn('[Amorebox] Falló la carga dinámica, se conserva el contenido estático.', err);
+        console.error('[Amorebox] Falló la carga dinámica del catálogo.', err);
+        mostrarEstadoCatalogo(contenedor, 'No se pudieron cargar los productos. Inténtalo más tarde.');
     }
 });
+
+function mostrarEstadoCatalogo(contenedor, mensaje) {
+    if (!contenedor) return;
+    contenedor.replaceChildren();
+    const estado = document.createElement('p');
+    estado.className = 'catalogo-estado';
+    estado.textContent = mensaje;
+    contenedor.appendChild(estado);
+}
 
 /* ---------------------- PÁGINAS DE CATÁLOGO ----------------- */
 
 function renderizarCatalogo(grid, productos) {
     if (!grid) return;
-    // Si la BD está vacía (aún sin seed), dejamos el HTML estático tal cual.
-    if (!productos.length) return;
-
-    grid.innerHTML = '';
+    grid.replaceChildren();
+    if (!productos.length) {
+        mostrarEstadoCatalogo(grid, 'No hay productos disponibles en este catálogo.');
+        return;
+    }
     const frag = document.createDocumentFragment();
     productos.forEach(p => frag.appendChild(crearTarjetaProducto(p)));
     grid.appendChild(frag);
@@ -89,9 +101,13 @@ function cardsReiniciar(grid) {
 
 function renderizarIndex(productos) {
     const contenedor = document.querySelector('.products-grid');
-    if (!contenedor || !productos.length) return;
+    if (!contenedor) return;
 
-    contenedor.innerHTML = '';
+    contenedor.replaceChildren();
+    if (!productos.length) {
+        mostrarEstadoCatalogo(contenedor, 'No hay productos disponibles en este momento.');
+        return;
+    }
     const frag = document.createDocumentFragment();
     productos.forEach(p => {
         const card = crearTarjetaProducto(p);
@@ -114,10 +130,9 @@ function renderizarIndex(productos) {
             const categoria = card.dataset.categoria || '';   // ← categoría REAL de la BD
             const stock = card.dataset.stock ?? '';
             if (typeof window.abrirModalInteligente === 'function') {
-                window.abrirModalInteligente(nombre, marca, precio, imagen, categoria, stock);
+                window.abrirModalInteligente(nombre, marca, precio, limpiarPrecio(precio), imagen, categoria, stock);
             }
         });
     });
 }
-
 

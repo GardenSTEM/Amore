@@ -39,8 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 marca = posibleMarca.innerText;
             }
             
-            // Pasamos el precio limpio y la imagen limpia al modal
-            abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
+            abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen, card.dataset.categoria || 'arreglo');
         });
     });
 
@@ -61,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    function abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen) {
+    function abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen, categoria = 'arreglo') {
         const existing = document.getElementById('amore-modal-root');
         if (existing) existing.remove();
 
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     precio: precioNumerico, // GUARDAMOS NÚMERO, NO TEXTO
                     cantidad: 1, 
                     imagen: imagenLimpia, 
-                    tipo: 'cartera' 
+                    tipo: categoria
                 });
             }
             
@@ -152,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
         };
     }
+    window.abrirModalInteligente = abrirModalInteligente;
 
     function mostrarNotificacionIndex(mensaje) {
         const notif = document.createElement('div');
