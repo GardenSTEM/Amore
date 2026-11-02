@@ -2,39 +2,40 @@ const WHATSAPP_NUMERO = "584126691482";
 const cap = (t) => t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : "";
 
 document.addEventListener('DOMContentLoaded', () => {
-    iniciarScrollRevealCatalogo(); // 👈 NUEVO: scroll reveal
-
+    iniciarScrollRevealCatalogo();
+    
     // LÓGICA DEL MENÚ DE MARCAS (DROPDOWN)
     const btnMarcas = document.getElementById('btn-marcas');
     const menuMarcas = document.getElementById('menu-marcas');
+    
     if (btnMarcas && menuMarcas) {
         btnMarcas.onclick = (e) => {
             e.stopPropagation();
             menuMarcas.classList.toggle('show');
         };
     }
+    
     window.onclick = () => {
         if (menuMarcas) menuMarcas.classList.remove('show');
     };
 });
 
-// FUNCIÓN PARA DAR FORMATO DE MILES 
+// FUNCIÓN PARA DAR FORMATO DE MILES
 const formatearPrecio = (num) => {
     return num.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-// APORTE NUEVO: Corrección de rutas de imágenes 
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
-    let limpia = ruta;
+    let limpia = ruta.trim();
     limpia = limpia.replace(/2026110/g, '20260110');
-    limpia = limpia.replace(/([^:]\/)\/+/g, "$1");
+    limpia = limpia.replace(/([^:])\/\//g, "$1/"); // 🔧 CORREGIDO
     return limpia;
 }
 
 // Fallback robusto de imágenes
 function manejarErrorImagen(img, rutaOriginal) {
-    const intentos = img.dataset.intentos || 0;
+    const intentos = parseInt(img.dataset.intentos) || 0;
     if (intentos === 0) {
         img.dataset.intentos = 1;
         img.src = rutaOriginal;
@@ -44,23 +45,37 @@ function manejarErrorImagen(img, rutaOriginal) {
     }
 }
 
-// FUNCIÓN PARA ORDENAR POR PRECIO 
 window.sortByPrice = function(order) {
     const grid = document.querySelector('.catalogo-grid');
+    if (!grid) return;
+    
     const cards = Array.from(grid.querySelectorAll('.product-card'));
     cards.forEach(card => card.style.display = "block");
+    
     cards.sort((a, b) => {
-        const priceA = parseFloat(a.getAttribute('data-price'));
-        const priceB = parseFloat(b.getAttribute('data-price'));
-        return order === 'low' ? priceA - priceB : priceB - priceA;
+        const priceA = parseFloat(a.getAttribute('data-price')) || 0;
+        const priceB = parseFloat(b.getAttribute('data-price')) || 0;
+        
+        // Si ambos tienen precio, ordenar normalmente
+        if (priceA > 0 && priceB > 0) {
+            return order === 'low' ? priceA - priceB : priceB - priceA;
+        }
+        
+        // Si uno no tiene precio, va al final
+        if (priceA === 0 && priceB > 0) return 1;
+        if (priceB === 0 && priceA > 0) return -1;
+        
+        return 0;
     });
+    
     grid.innerHTML = "";
-    // animación escalonada al reordenar
+    
     cards.forEach((card, i) => {
         card.style.opacity = "0";
         card.style.transform = "translateY(20px)";
         card.style.transition = "opacity 0.4s ease, transform 0.4s ease";
         grid.appendChild(card);
+        
         setTimeout(() => {
             card.style.opacity = "1";
             card.style.transform = "translateY(0)";
@@ -68,10 +83,9 @@ window.sortByPrice = function(order) {
     });
 };
 
-// FUNCIÓN PARA FILTRAR POR MARCA 
+// FUNCIÓN PARA FILTRAR POR MARCA
 window.filterByBrand = function(brand) {
     const cards = document.querySelectorAll('.product-card');
-    // animación suave al filtrar
     cards.forEach((card, i) => {
         const mostrar = (brand === 'all' || card.getAttribute('data-brand') === brand);
         if (mostrar) {
@@ -87,22 +101,23 @@ window.filterByBrand = function(brand) {
     });
 };
 
-// FUNCIÓN DEL MODAL DE PRODUCTO 
+// FUNCIÓN DEL MODAL DE PRODUCTO
 let modalQty = 1;
+
 window.openModal = function(nombre, marca, precio, imagen) {
     const modalRoot = document.getElementById('amore-modal-root');
-    modalQty = 1;
+    if (!modalRoot) return;
     
-    // función centralizada de limpieza
+    modalQty = 1;
     const rutaLimpia = limpiarRutaImagen(imagen);
-
+    
     modalRoot.innerHTML = `
         <style>
             #amore-modal-overlay {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
                 display: flex; align-items: center; justify-content: center; z-index: 10000;
-                padding-right: 10px;
+                padding: 10px;
                 animation: amoreOverlayIn 0.3s ease;
             }
             @keyframes amoreOverlayIn { from { opacity: 0; } to { opacity: 1; } }
@@ -127,7 +142,7 @@ window.openModal = function(nombre, marca, precio, imagen) {
                 transition: transform 0.4s ease;
             }
             .modal-img:hover { transform: scale(1.03); }
-            .modal-body { padding: 5px 5px; justify-content: center; }
+            .modal-body { padding: 15px 15px; justify-content: center; }
             .modal-price { font-size: 1.5rem; font-weight: 800; margin: 8px 0; color: #000; }
             .btn-amore {
                 width: 92%; height: 45px; border-radius: 10px; border: none; margin: 8px auto;
@@ -151,9 +166,9 @@ window.openModal = function(nombre, marca, precio, imagen) {
         <div id="amore-modal-overlay" onclick="if(event.target === this) closeAmoreModal()">
             <div class="modal-card">
                 <span class="btn-cerrar" onclick="closeAmoreModal()">&times;</span>
-                <img src="{rutaLimpia}" class="modal-img" 
+                <img src="${rutaLimpia}" class="modal-img" 
                      onerror="manejarErrorImagen(this, '${imagen}')"
-                     alt="{cap(nombre)}">
+                     alt="${cap(nombre)}">
                 <div class="modal-body">
                     <h2 style="margin:0; font-size: 1.3rem; font-family:'Playfair Display', serif; color: #5B4131;">${cap(nombre)}</h2>
                     <p style="color:#828282; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; margin: 5px 0;">${marca}</p>
@@ -168,65 +183,114 @@ window.openModal = function(nombre, marca, precio, imagen) {
             </div>
         </div>
     `;
+    
     modalRoot.style.display = 'block';
     document.body.style.overflow = 'hidden';
 };
 
 window.closeAmoreModal = () => {
     const modalRoot = document.getElementById('amore-modal-root');
-    modalRoot.style.display = 'none';
-    modalRoot.innerHTML = '';
-    document.body.style.overflow = 'auto';
+    if (modalRoot) {
+        modalRoot.style.display = 'none';
+        modalRoot.innerHTML = '';
+        document.body.style.overflow = 'auto';
+    }
 };
+
 
 window.addToBag = (nombre, marca, precio, imagen) => {
     const cart = JSON.parse(localStorage.getItem('amore_carrito')) || [];
-    const valorNumerico = parseFloat(precio.replace(/[^0-9.-]+/g, ""));
-    cart.push({ nombre, marca, precio: valorNumerico, cantidad: 1, imagen });
+    
+    //  Limpiar precio correctamente
+    const precioLimpio = precio.toString().replace(/[^0-9.,]/g, '').replace(',', '.');
+    const valorNumerico = parseFloat(precioLimpio) || 0;
+    
+    // Buscar producto existente y sumar cantidad
+    const productoExistente = cart.find(item => item.nombre === nombre);
+    
+    if (productoExistente) {
+        productoExistente.cantidad += 1;
+    } else {
+        cart.push({ 
+            nombre, 
+            marca, 
+            precio: valorNumerico, 
+            cantidad: 1, 
+            imagen: limpiarRutaImagen(imagen),
+            tipo: 'cartera'
+        });
+    }
+    
     localStorage.setItem('amore_carrito', JSON.stringify(cart));
-    alert("✨ ¡Añadido con éxito!");
+    
+    mostrarNotificacion("¡Añadido con éxito!");
+    
     closeAmoreModal();
-    //  shake del icono del carrito
     sacudirIconoCarrito();
 };
 
+
+function mostrarNotificacion(mensaje) {
+    const notifAnterior = document.getElementById('amore-notificacion');
+    if (notifAnterior) notifAnterior.remove();
+    
+    const notif = document.createElement('div');
+    notif.id = 'amore-notificacion';
+    notif.innerText = mensaje;
+    notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #9ad0AD;
+        color: #5B4131;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        z-index: 100000;
+        animation: slideInRight 0.4s ease;
+    `;
+    
+    const style = document.createElement('style');
+    style.innerText = `
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(notif);
+    
+    setTimeout(() => {
+        notif.style.animation = 'slideInRight 0.4s ease reverse';
+        setTimeout(() => notif.remove(), 400);
+    }, 2500);
+}
+
 window.buyNow = (nombre, marca, precio) => {
-    const mensaje = ` *NUEVO PEDIDO AMORE* \n\nHola, feliz día! Me interesa este producto:\n\n▪️ *${nombre}*\n▫️ Colección: ${marca}\n▫️ Precio: ${precio}\n\n¿Tienen disponibilidad? `;
+    const mensaje = `*NUEVO PEDIDO AMORE* \n\nHola, feliz día! Me interesa este producto:\n\n▪️ *${nombre}*\n▫️ Colección: ${marca}\n▫️ Precio: ${precio}\n\n¿Tienen disponibilidad?`;
     window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
 };
 
-
 // Scroll reveal para las tarjetas
-
 function iniciarScrollRevealCatalogo() {
     if (!document.getElementById('amore-catalog-reveal-style')) {
         const style = document.createElement('style');
         style.id = 'amore-catalog-reveal-style';
-        style.innerHTML = `
-            .amore-card-reveal {
-                opacity: 0;
-                transform: translateY(30px);
-                transition: opacity 0.6s ease, transform 0.6s ease;
-            }
-            .amore-card-reveal.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            @media (prefers-reduced-motion: reduce) {
-                .amore-card-reveal { opacity: 1; transform: none; transition: none; }
-            }
-        `;
+        style.innerHTML = `.amore-card-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; } .amore-card-reveal.visible { opacity: 1; transform: translateY(0); } @media (prefers-reduced-motion: reduce) { .amore-card-reveal { opacity: 1; transform: none; transition: none; } }`;
         document.head.appendChild(style);
     }
-
+    
     const cards = document.querySelectorAll('.product-card');
     if (cards.length === 0) return;
-
+    
     cards.forEach((card, i) => {
         card.classList.add('amore-card-reveal');
         card.dataset.delay = i * 80;
     });
-
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -236,33 +300,25 @@ function iniciarScrollRevealCatalogo() {
             }
         });
     }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
-
+    
     cards.forEach(card => observer.observe(card));
 }
-
 
 function sacudirIconoCarrito() {
     if (!document.getElementById('amore-shake-style')) {
         const style = document.createElement('style');
         style.id = 'amore-shake-style';
-        style.innerHTML = `
-            @keyframes amoreShake {
-                0%, 100% { transform: rotate(0); }
-                20% { transform: rotate(-15deg); }
-                40% { transform: rotate(15deg); }
-                60% { transform: rotate(-10deg); }
-                80% { transform: rotate(10deg); }
-            }
-            .amore-shake { animation: amoreShake 0.6s ease; }
-        `;
+        style.innerHTML = `@keyframes amoreShake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-15deg); } 40% { transform: rotate(15deg); } 60% { transform: rotate(-10deg); } 80% { transform: rotate(10deg); } } .amore-shake { animation: amoreShake 0.6s ease; }`;
         document.head.appendChild(style);
     }
+    
     const cartIcon = document.querySelector('.cart-icon') || document.querySelector('[aria-label="carrito"]');
     if (cartIcon) {
         cartIcon.classList.remove('amore-shake');
         void cartIcon.offsetWidth;
         cartIcon.classList.add('amore-shake');
     }
+    
     const carrito = JSON.parse(localStorage.getItem('amore_carrito')) || [];
     const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
     const badge = document.getElementById('cart-count');
