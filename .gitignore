@@ -1,1 +1,10 @@
+<<<<<<< HEAD
 .env
+=======
+.env
+package.json
+package-lock.json
+node_modules/
+supabase
+.gitignore
+>>>>>>> 0aa426ddad52e7acc0644ef7f6ed3499e72fc6d8
