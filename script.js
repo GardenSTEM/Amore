@@ -209,15 +209,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 20000);
     }
 
-    // ===== NAVEGACIÓN ÍNDICE - MENÚ HAMBURGUESA =====
+// ===== NAVEGACIÓN ÍNDICE - MENÚ HAMBURGUESA =====
 const menuToggle = document.getElementById('menu-toggle');
 const navIndice = document.getElementById('nav-indice');
 const navLinks = document.querySelectorAll('.nav-indice a');
 
 // Crear overlay dinámicamente
-const overlay = document.createElement('div');
-overlay.className = 'nav-overlay';
-document.body.appendChild(overlay);
+let overlay = document.querySelector('.nav-overlay');
+if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
+}
 
 // Toggle del menú al hacer click en el botón hamburguesa
 if (menuToggle && navIndice) {
@@ -229,12 +232,35 @@ if (menuToggle && navIndice) {
     });
 }
 
-// Cerrar menú al hacer click en un enlace
+// 🔧 CLAVE: Cerrar menú Y navegar a la sección al hacer click en un enlace
 navLinks.forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevenir comportamiento default
+        
+        const href = link.getAttribute('href');
+        
+        // Cerrar menú
         menuToggle.classList.remove('active');
         navIndice.classList.remove('open');
         overlay.classList.remove('show');
+        
+        // Navegar a la sección con scroll suave
+        if (href && href.startsWith('#')) {
+            const targetId = href.substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                // Scroll suave manual con offset para el header sticky
+                const headerOffset = 100;
+                const elementPosition = targetSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
     });
 });
 
@@ -245,7 +271,7 @@ overlay.addEventListener('click', () => {
     overlay.classList.remove('show');
 });
 
-// Cerrar menú al hacer click fuera (en el body)
+// Cerrar menú al hacer click fuera
 document.addEventListener('click', (e) => {
     if (navIndice.classList.contains('open') && 
         !navIndice.contains(e.target) && 
