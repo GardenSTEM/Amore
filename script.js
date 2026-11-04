@@ -1,6 +1,7 @@
 const WHATSAPP_NUMERO = "584126691482";
 
 
+
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
     let limpia = ruta.trim();
@@ -207,4 +208,77 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500);
         }, 20000);
     }
+
+    // ===== NAVEGACIÓN ÍNDICE - MENÚ HAMBURGUESA =====
+const menuToggle = document.getElementById('menu-toggle');
+const navIndice = document.getElementById('nav-indice');
+const navLinks = document.querySelectorAll('.nav-indice a');
+
+// Crear overlay dinámicamente
+const overlay = document.createElement('div');
+overlay.className = 'nav-overlay';
+document.body.appendChild(overlay);
+
+// Toggle del menú al hacer click en el botón hamburguesa
+if (menuToggle && navIndice) {
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuToggle.classList.toggle('active');
+        navIndice.classList.toggle('open');
+        overlay.classList.toggle('show');
+    });
+}
+
+// Cerrar menú al hacer click en un enlace
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navIndice.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+});
+
+// Cerrar menú al hacer click en el overlay
+overlay.addEventListener('click', () => {
+    menuToggle.classList.remove('active');
+    navIndice.classList.remove('open');
+    overlay.classList.remove('show');
+});
+
+// Cerrar menú al hacer click fuera (en el body)
+document.addEventListener('click', (e) => {
+    if (navIndice.classList.contains('open') && 
+        !navIndice.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+        menuToggle.classList.remove('active');
+        navIndice.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+});
+
+// Resaltar sección activa al hacer scroll
+const secciones = document.querySelectorAll('section[id]');
+
+function resaltarSeccionActiva() {
+    const scrollY = window.scrollY + 150;
+    
+    secciones.forEach(seccion => {
+        const seccionTop = seccion.offsetTop;
+        const seccionHeight = seccion.offsetHeight;
+        const seccionId = seccion.getAttribute('id');
+        
+        if (scrollY >= seccionTop && scrollY < seccionTop + seccionHeight) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${seccionId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    });
+}
+
+window.addEventListener('scroll', resaltarSeccionActiva);
+resaltarSeccionActiva();
+
 });
