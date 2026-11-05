@@ -7,11 +7,18 @@ module.exports = (req, res) => {
             return acc;
         }, {});
 
+    const urlOriginal = (process.env.SUPABASE_URL || '').trim();
+    // Comprueba el error típico: .supabase.com en lugar de .supabase.co
+    const urlDominioValido = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(
+        urlOriginal.replace(/\/+$/, '').replace(/\/rest\/v1.*$/, '')
+    );
+
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
     res.end(JSON.stringify({
         variables: presentes,
+        supabaseUrlDominioValido: urlDominioValido,
         vercelEnv: process.env.VERCEL_ENV || null,
         commit: process.env.VERCEL_GIT_COMMIT_SHA || null
     }));

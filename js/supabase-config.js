@@ -12,7 +12,11 @@ const SUPABASE_ANON_KEY = SUPABASE_CONFIG.anonKey || '';
 // Normalización defensiva: si algún día se pega la URL con sufijo
 // /rest/v1 (viene así en el ejemplo de la API) o con espacios, se
 // corrige sola para que el login nunca falle por eso.
-const SUPABASE_URL_LIMPIA = SUPABASE_URL.trim().replace(/\/+$/, '').replace(/\/rest\/v1.*$/, '');
+const SUPABASE_URL_LIMPIA = SUPABASE_URL.trim()
+    .replace(/\/+$/, '')
+    .replace(/\/rest\/v1.*$/, '')
+    // Corrige el error más común: escribir .supabase.com en lugar de .supabase.co
+    .replace(/\.supabase\.com(?=$|\/)/i, '.supabase.co');
 const SUPABASE_ANON_KEY_LIMPIA = String(SUPABASE_ANON_KEY).trim();
 
 let URL_SUPABASE_VALIDA = false;
@@ -40,7 +44,12 @@ if (CREDENCIALES_REALES) {
     // rechazaría su propio pedido. Con este cliente el registro funciona
     // igual, haya sesión o no, y sin ver ni leer ninguna fila.
     window._sbAnon = supabase.createClient(SUPABASE_URL_LIMPIA, SUPABASE_ANON_KEY_LIMPIA, {
-        auth: { persistSession: false, autoRefreshToken: false }
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            // Clave distinta para evitar el aviso de "Multiple GoTrueClient instances".
+            storageKey: 'amorebox-anon-pedidos'
+        }
     });
 } else {
     console.warn('[Amorebox] Supabase sin configurar: define SUPABASE_URL y SUPABASE_ANON_KEY en el .env (local) o en las Environment Variables del proyecto en Vercel.');
