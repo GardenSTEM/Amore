@@ -115,6 +115,16 @@
             </a>
         </div>
 
+        <nav class="nav-indice" id="nav-indice">
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#categorias">Catálogos</a></li>
+                <li><a href="#mas-vendidos">Más vendidos</a></li>
+                <li><a href="#arreglos-tienda">Arreglos de tienda</a></li>
+                <li><a href="#condiciones">Condiciones de compra</a></li>
+            </ul>
+        </nav>
+
         <div class="header-right">
             <a href="https://wa.me/584126691482" class="nav-icon" aria-label="WhatsApp">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
@@ -131,15 +141,22 @@
   <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
 </svg>
             </a>
+
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 </header>
 
 
-<main>
-<section class="info-carousel-container"> <!-- Barra de Información (animada) -->
-    <div class="info-carousel-track">
 
+
+<main>
+<section id="inicio" class="info-carousel-container"> <!-- Barra de Información (animada) -->
+    <div class="info-carousel-track">
         <div class="info-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-minus" viewBox="0 0 16 16">
   <path d="M5.5 10.5A.5.5 0 0 1 6 10h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
@@ -252,7 +269,7 @@
 
 <hr class="divider">
 
-    <section class="categories"> <!-- Categoria de las carteras y arreglos -->
+    <section id="categorias" class="categories"><!-- Categoria de las carteras y arreglos -->
         <div class="category-row"> <!--arreglos-->
             <span class="categoryText">
                 <h2>Arreglos Florales</h2>
@@ -280,7 +297,7 @@
         </div>
     </section>
 
-    <section class="best-sellers"> <!--Lo más vendido-->
+    <section id="mas-vendidos" class="best-sellers"> <!--Lo más vendido-->
         <h2 class="section-title">Lo más vendido</h2>
 
 
@@ -347,7 +364,7 @@
     </div>
     </section>
 
-    <section class="arreglos-tienda">
+    <section id="arreglos-tienda" class="arreglos-tienda">
     <h2>Arreglos de tienda</h2>
     <p class="arreglos-tienda-subtitle">Arreglos disponibles solo en nuestra tienda física en Sambil Paraguaná.</p> 
         <div class="tienda-filas">
@@ -415,7 +432,7 @@
 
     </section>
 
-    <section class="Conditions"> 
+    <section id="condiciones" class="Conditions"> 
         <h2 class="section-title">Condiciones de venta</h2>
         <div class="Conditions-content">
 

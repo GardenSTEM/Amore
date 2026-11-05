@@ -1,2 +1,11 @@
+<<<<<<< HEAD
+.env
+=======
 .env
 node_modules/
+<<<<<<< HEAD
+=======
+supabase
+.gitignore
+>>>>>>> 0aa426ddad52e7acc0644ef7f6ed3499e72fc6d8
+>>>>>>> 86f8dad0cde098009c3f6a8e305c90dc522bd743

@@ -1,6 +1,7 @@
 const WHATSAPP_NUMERO = "584126691482";
 
 
+
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
     let limpia = ruta.trim();
@@ -207,4 +208,103 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500);
         }, 20000);
     }
+
+// ===== NAVEGACIÓN ÍNDICE - MENÚ HAMBURGUESA =====
+const menuToggle = document.getElementById('menu-toggle');
+const navIndice = document.getElementById('nav-indice');
+const navLinks = document.querySelectorAll('.nav-indice a');
+
+// Crear overlay dinámicamente
+let overlay = document.querySelector('.nav-overlay');
+if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
+}
+
+// Toggle del menú al hacer click en el botón hamburguesa
+if (menuToggle && navIndice) {
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuToggle.classList.toggle('active');
+        navIndice.classList.toggle('open');
+        overlay.classList.toggle('show');
+    });
+}
+
+// 🔧 CLAVE: Cerrar menú Y navegar a la sección al hacer click en un enlace
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevenir comportamiento default
+        
+        const href = link.getAttribute('href');
+        
+        // Cerrar menú
+        menuToggle.classList.remove('active');
+        navIndice.classList.remove('open');
+        overlay.classList.remove('show');
+        
+        // Navegar a la sección con scroll suave
+        if (href && href.startsWith('#')) {
+            const targetId = href.substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                // Scroll suave manual con offset para el header sticky
+                const headerOffset = 100;
+                const elementPosition = targetSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    });
+});
+
+// Cerrar menú al hacer click en el overlay
+overlay.addEventListener('click', () => {
+    menuToggle.classList.remove('active');
+    navIndice.classList.remove('open');
+    overlay.classList.remove('show');
+});
+
+// Cerrar menú al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (navIndice.classList.contains('open') && 
+        !navIndice.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+        menuToggle.classList.remove('active');
+        navIndice.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+});
+
+// Resaltar sección activa al hacer scroll
+const secciones = document.querySelectorAll('section[id]');
+
+function resaltarSeccionActiva() {
+    const scrollY = window.scrollY + 150;
+    
+    secciones.forEach(seccion => {
+        const seccionTop = seccion.offsetTop;
+        const seccionHeight = seccion.offsetHeight;
+        const seccionId = seccion.getAttribute('id');
+        
+        if (scrollY >= seccionTop && scrollY < seccionTop + seccionHeight) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${seccionId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    });
+}
+
+window.addEventListener('scroll', resaltarSeccionActiva);
+resaltarSeccionActiva();
+
 });
