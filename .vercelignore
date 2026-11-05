@@ -1,0 +1,9 @@
+# Archivos que no necesitan subirse a Vercel
+.env
+.env.example
+node_modules
+.freebuff
+preview-server.js
+scripts
+supabase
+package-lock.json

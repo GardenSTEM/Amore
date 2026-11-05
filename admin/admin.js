@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (typeof _sb === 'undefined') {
         document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif">' +
             '<h2>Supabase sin configurar</h2>' +
-            '<p>Configura SUPABASE_URL y SUPABASE_ANON_KEY en el archivo <code>.env</code>.</p></div>';
+            '<p>Configura SUPABASE_URL y SUPABASE_ANON_KEY en el archivo <code>.env</code> (local) o en las Environment Variables de Vercel.</p></div>';
         return;
     }
 

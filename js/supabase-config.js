@@ -43,5 +43,5 @@ if (CREDENCIALES_REALES) {
         auth: { persistSession: false, autoRefreshToken: false }
     });
 } else {
-    console.warn('[Amorebox] Supabase sin configurar: Coloca tus credenciales en el .env');
+    console.warn('[Amorebox] Supabase sin configurar: define SUPABASE_URL y SUPABASE_ANON_KEY en el .env (local) o en las Environment Variables del proyecto en Vercel.');
 }

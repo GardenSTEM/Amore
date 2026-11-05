@@ -1,0 +1,14 @@
+{
+  "name": "amorebox",
+  "version": "1.0.0",
+  "description": "Amorebox: Boutique Floral — catálogo público + panel de administración (Supabase)",
+  "private": true,
+  "scripts": {
+    "dev": "node preview-server.js",
+    "start": "node preview-server.js",
+    "migrate:cloudinary": "node scripts/migrate-cloudinary-images.js"
+  },
+  "dependencies": {
+    "cloudinary": "^2.11.0"
+  }
+}

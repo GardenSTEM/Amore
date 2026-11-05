@@ -1,0 +1,24 @@
+# robots.txt — Amorebox: Boutique Floral
+# https://amorebox.com/
+
+User-agent: *
+Allow: /
+
+# Panel privado y archivos internos
+Disallow: /admin/
+Disallow: /supabase/
+Disallow: /scripts/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /preview-server.js
+Disallow: /api/
+
+# La bolsa de compra se controla con meta robots noindex
+# (no se bloquea aquí para que los buscadores puedan leer el noindex).
+
+Sitemap: https://amorebox.com/sitemap.xml
+
+

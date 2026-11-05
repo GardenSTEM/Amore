@@ -53,23 +53,41 @@ async function eliminarProducto(id) {
 
 /* ------------------------ CLOUDINARY ---------------------- */
 
+// Vercel limita el cuerpo de las funciones a ~4,5 MB.
+const MAX_IMAGEN_BYTES = 4 * 1024 * 1024;
+
 // El servidor valida la sesión y firma la subida; el secreto nunca llega al navegador.
 async function subirImagen(file, productoId) {
+    if (file.size > MAX_IMAGEN_BYTES) {
+        throw new Error('La imagen supera el límite de 4 MB. Comprímela o usa una más pequeña.');
+    }
+
     const { data, error } = await _sb.auth.getSession();
     if (error) throw error;
     if (!data.session) throw new Error('Inicia sesión para subir imágenes.');
 
+    // Se envía como octet-stream para que Vercel entregue el cuerpo binario
+    // sin intentar parsearlo; el tipo real viaja en X-Image-Type.
     const response = await fetch('/api/cloudinary-upload', {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${data.session.access_token}`,
-            'Content-Type': file.type,
+            'Content-Type': 'application/octet-stream',
+            'X-Image-Type': file.type,
             'X-Product-Id': productoId
         },
         body: file
     });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || `Error subiendo imagen (HTTP ${response.status}).`);
+    const text = await response.text();
+    let result = {};
+    try { result = JSON.parse(text); } catch (parseError) { /* respuesta no JSON */ }
+    if (!response.ok) {
+        const mensaje = result.error
+            || (response.status === 413
+                ? 'La imagen supera el límite permitido por el servidor (4 MB).'
+                : `Error subiendo imagen (HTTP ${response.status}).`);
+        throw new Error(mensaje);
+    }
     if (!result.url || !result.url.startsWith('https://res.cloudinary.com/')) {
         throw new Error('Cloudinary no devolvió una URL válida.');
     }
