@@ -547,9 +547,8 @@ body {
 
     .product-card {
         width: 100%;
-        max-width: 350px;  /* ← Un poco más grande en móvil */
+        max-width: 200px;
     }
-}
 
     .product-card:hover,
     .product-card:active {
