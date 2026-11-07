@@ -271,6 +271,18 @@ function agregarBadgeStock(card, p) {
     card.appendChild(badge);
 }
 
+// Devuelve una URL de Cloudinary con el ancho adecuado para la pantalla.
+// Cloudinary guarda las transformaciones después de /image/upload/; si ya
+// existe una (f_auto,q_auto,w_900...), se reemplaza para no acumularlas.
+function urlImagenCloudinary(url, ancho) {
+    if (!url || !url.includes('/image/upload/')) return url;
+    const [base, resto] = url.split('/image/upload/');
+    if (!base || !resto) return url;
+    const segmentos = resto.split('/');
+    if (segmentos.length > 1 && !/^v\d+$/.test(segmentos[0])) segmentos.shift();
+    return `${base}/image/upload/f_auto,q_auto,w_${ancho},c_limit/${segmentos.join('/')}`;
+}
+
 // Construye la tarjeta de producto con el MISMO marcado que el HTML estático.
 // Reutiliza limpiarRutaImagen() y manejarErrorImagen() de los scripts de catálogo.
 function crearTarjetaProducto(p) {
@@ -294,8 +306,21 @@ function crearTarjetaProducto(p) {
         `openModal('${esc(nombre)}', '${esc(detalle)}', '${esc(precioTxt)}', '${esc(rutaOriginal)}', '${esc(stockArg)}')`);
 
     const img = document.createElement('img');
-    img.src = ruta;
+    if (ruta && ruta.includes('/image/upload/')) {
+        // Imagen responsiva: el navegador descarga solo el tamaño que necesita.
+        img.src = urlImagenCloudinary(ruta, 500);
+        img.srcset = [
+            `${urlImagenCloudinary(ruta, 300)} 300w`,
+            `${urlImagenCloudinary(ruta, 500)} 500w`,
+            `${urlImagenCloudinary(ruta, 900)} 900w`
+        ].join(', ');
+        img.sizes = '(max-width: 768px) 45vw, 300px';
+    } else {
+        img.src = ruta;
+    }
     img.alt = nombre;
+    img.loading = 'lazy';
+    img.decoding = 'async';
     img.onerror = function () { if (typeof manejarErrorImagen === 'function') manejarErrorImagen(this, rutaOriginal); };
 
     const info = document.createElement('div');

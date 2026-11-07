@@ -1,6 +1,17 @@
 {
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/catalogo arreglos.html", "destination": "/arreglos", "statusCode": 301 },
+    { "source": "/catalogo%20arreglos.html", "destination": "/arreglos", "statusCode": 301 },
+    { "source": "/catalogo carteras.html", "destination": "/carteras", "statusCode": 301 },
+    { "source": "/catalogo%20carteras.html", "destination": "/carteras", "statusCode": 301 }
+  ],
   "rewrites": [
-    { "source": "/supabase-config.js", "destination": "/api/supabase-config" }
+    { "source": "/arreglos", "destination": "/catalogo%20arreglos.html" },
+    { "source": "/carteras", "destination": "/catalogo%20carteras.html" },
+    { "source": "/supabase-config.js", "destination": "/api/supabase-config" },
+    { "source": "/admin", "destination": "/admin/admin.html" },
+    { "source": "/admin/", "destination": "/admin/admin.html" }
   ],
   "functions": {
     "api/*.js": {

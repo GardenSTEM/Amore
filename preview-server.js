@@ -27,9 +27,53 @@ const MIME = {
     '.md': 'text/plain; charset=utf-8'
 };
 
+// Catálogo con URLs limpias (mismo comportamiento que vercel.json).
+const RUTAS_CATALOGO = {
+    '/arreglos': '/catalogo arreglos.html',
+    '/carteras': '/catalogo carteras.html'
+};
+
+// Las URLs antiguas redirigen permanentemente a las limpias.
+const REDIRECCIONES_CATALOGO = {
+    '/catalogo arreglos.html': '/arreglos',
+    '/catalogo carteras.html': '/carteras'
+};
+
+// Sirve la página de error personalizada (404.html / 500.html) con el
+// código HTTP correcto. Si el archivo no existe, cae a texto plano.
+function servirPaginaError(res, codigo) {
+    const archivo = path.join(ROOT, `${codigo}.html`);
+    fs.readFile(archivo, (error, contenido) => {
+        if (error) {
+            res.writeHead(codigo, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end(codigo === 404 ? 'Not Found' : 'Server Error');
+            return;
+        }
+        res.writeHead(codigo, {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'no-store'
+        });
+        res.end(contenido);
+    });
+}
+
 const server = http.createServer((req, res) => {
     try {
         let urlPath = decodeURIComponent(req.url.split('?')[0]);
+
+        // Igual que "trailingSlash": false en Vercel (308 permanente).
+        if (urlPath.length > 1 && urlPath.endsWith('/')) {
+            res.writeHead(308, { Location: urlPath.replace(/\/+$/, '') });
+            res.end();
+            return;
+        }
+        if (REDIRECCIONES_CATALOGO[urlPath]) {
+            res.writeHead(301, { Location: REDIRECCIONES_CATALOGO[urlPath] });
+            res.end();
+            return;
+        }
+        if (RUTAS_CATALOGO[urlPath]) urlPath = RUTAS_CATALOGO[urlPath];
+
         if (urlPath === '/api/cloudinary-upload') {
             subirImagenCloudinary(req, res).catch(error => {
                 console.error('[Amorebox] Error subiendo imagen a Cloudinary:', error.message);
@@ -49,6 +93,8 @@ const server = http.createServer((req, res) => {
             return;
         }
         if (urlPath === '/') urlPath = '/index.html';
+        // Mismo atajo que en producción (vercel.json): /admin → panel.
+        if (urlPath === '/admin' || urlPath === '/admin/') urlPath = '/admin/admin.html';
 
         // Normaliza y evita salir del directorio raíz
         const filePath = path.normalize(path.join(ROOT, urlPath));
@@ -58,11 +104,11 @@ const server = http.createServer((req, res) => {
 
         fs.stat(filePath, (err, stat) => {
             if (!err && stat.isDirectory()) {
-                res.writeHead(404); res.end('Not Found'); return;
+                servirPaginaError(res, 404);
+                return;
             }
             if (err || !stat.isFile()) {
-                res.writeHead(404, { 'Content-Type': 'text/plain' });
-                res.end('Not Found');
+                servirPaginaError(res, 404);
                 return;
             }
             const ext = path.extname(filePath).toLowerCase();
@@ -75,7 +121,8 @@ const server = http.createServer((req, res) => {
             fs.createReadStream(filePath).pipe(res);
         });
     } catch (e) {
-        res.writeHead(500); res.end('Server Error');
+        if (!res.headersSent) servirPaginaError(res, 500);
+        else res.end();
     }
 });
 

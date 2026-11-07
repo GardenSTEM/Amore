@@ -50,5 +50,5 @@ powershell -NoProfile -Command "(Start-Process -FilePath 'npm.cmd' -ArgumentList
 
 Rutas principales:
 - `/index.html` — página pública ("Lo más vendido" dinámico desde Supabase)
-- `/catalogo%20arreglos.html`, `/catalogo%20carteras.html` — catálogos dinámicos (tiempo real)
-- `/admin/admin.html` — panel de administración; login con el usuario creado en Supabase Authentication
+- `/arreglos`, `/carteras` — catálogos dinámicos (tiempo real); las URLs antiguas `/catalogo *.html` redirigen con 301
+- `/admin` — panel de administración (rewrite a `/admin/admin.html`); login con el usuario creado en Supabase Authentication
