@@ -27,6 +27,18 @@ const MIME = {
     '.md': 'text/plain; charset=utf-8'
 };
 
+// Catálogo con URLs limpias (mismo comportamiento que vercel.json).
+const RUTAS_CATALOGO = {
+    '/arreglos': '/catalogo arreglos.html',
+    '/carteras': '/catalogo carteras.html'
+};
+
+// Las URLs antiguas redirigen permanentemente a las limpias.
+const REDIRECCIONES_CATALOGO = {
+    '/catalogo arreglos.html': '/arreglos',
+    '/catalogo carteras.html': '/carteras'
+};
+
 // Sirve la página de error personalizada (404.html / 500.html) con el
 // código HTTP correcto. Si el archivo no existe, cae a texto plano.
 function servirPaginaError(res, codigo) {
@@ -48,6 +60,20 @@ function servirPaginaError(res, codigo) {
 const server = http.createServer((req, res) => {
     try {
         let urlPath = decodeURIComponent(req.url.split('?')[0]);
+
+        // Igual que "trailingSlash": false en Vercel (308 permanente).
+        if (urlPath.length > 1 && urlPath.endsWith('/')) {
+            res.writeHead(308, { Location: urlPath.replace(/\/+$/, '') });
+            res.end();
+            return;
+        }
+        if (REDIRECCIONES_CATALOGO[urlPath]) {
+            res.writeHead(301, { Location: REDIRECCIONES_CATALOGO[urlPath] });
+            res.end();
+            return;
+        }
+        if (RUTAS_CATALOGO[urlPath]) urlPath = RUTAS_CATALOGO[urlPath];
+
         if (urlPath === '/api/cloudinary-upload') {
             subirImagenCloudinary(req, res).catch(error => {
                 console.error('[Amorebox] Error subiendo imagen a Cloudinary:', error.message);
