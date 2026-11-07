@@ -337,6 +337,7 @@ body {
 
 .product-card {
     width: 100%;
+    max-width: 320px;  /* ← Limita el ancho máximo de cada tarjeta */
     text-align: left;
     cursor: pointer;
     transition: var(--transition);
@@ -546,8 +547,9 @@ body {
 
     .product-card {
         width: 100%;
-        max-width: 400px;
+        max-width: 350px;  /* ← Un poco más grande en móvil */
     }
+}
 
     .product-card:hover,
     .product-card:active {
