@@ -1044,5 +1044,6 @@ html {
     .footer_right {
         padding: 0;
         text-align: center;
+        font-size: 1 rem;
     }
 }

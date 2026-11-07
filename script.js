@@ -1,7 +1,5 @@
 const WHATSAPP_NUMERO = "584126691482";
 
-
-
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
     let limpia = ruta.trim();
@@ -9,7 +7,6 @@ function limpiarRutaImagen(ruta) {
     limpia = limpia.replace(/([^:])\/\//g, "$1/");
     return limpia;
 }
-
 
 function limpiarPrecio(precioTexto) {
     if (!precioTexto) return 0;
@@ -21,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizarNotificacionCarrito();
     moverInfoBar();
     rotarMasVendidos();
+    inicializarNavegacionIndice(); // 👈 NUEVO: inicializa el menú hamburguesa
 
-// modal para los arreglos mas vendidos
+    // ===== MODAL PARA "LO MÁS VENDIDO" (.product-card) =====
     const productosIndex = document.querySelectorAll('.product-card');
     productosIndex.forEach(card => {
         card.style.cursor = 'pointer';
@@ -30,8 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const nombre = card.querySelector('h3')?.innerText || "";
             const precioTexto = card.querySelector('.price')?.innerText || "$0";
             const imagen = card.querySelector('img')?.src || "";
-            
-            // Limpiar precio numérico para el carrito
             const precioNumerico = limpiarPrecio(precioTexto);
             
             let marca = "Amore Collection";
@@ -40,12 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 marca = posibleMarca.innerText;
             }
             
-            abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen, card.dataset.categoria || 'arreglo');
+            abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
         });
     });
 
-    // modal para arreglos de tienda
-
+    // ===== MODAL PARA "ARREGLOS DE TIENDA" (.tienda-fila) =====
     const arreglosTienda = document.querySelectorAll('.tienda-fila');
     arreglosTienda.forEach(card => {
         card.style.cursor = 'pointer';
@@ -54,14 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const precioTexto = card.querySelector('.price')?.innerText || "$0";
             const imagen = card.querySelector('img')?.src || "";
             const precioNumerico = limpiarPrecio(precioTexto);
-            const marca = "Arreglo de tienda"; // Son exclusivos de la tienda
+            const marca = "Arreglo de tienda";
             
             abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
         });
     });
 
-
-    function abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen, categoria = 'arreglo') {
+    function abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen) {
         const existing = document.getElementById('amore-modal-root');
         if (existing) existing.remove();
 
@@ -101,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const modal = document.createElement('div');
         modal.id = 'amore-modal-root';
         
-        // Usar imagen limpia y fallback
         const imagenLimpia = limpiarRutaImagen(imagen);
         
         modal.innerHTML = `
@@ -122,11 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('close-modal').onclick = () => modal.remove();
         modal.onclick = (e) => { if (e.target.id === 'amore-modal-root') modal.remove(); };
 
-        // Guardar el precio numérico en el carrito
         document.getElementById('add-to-bag').onclick = () => {
             const cart = JSON.parse(localStorage.getItem('amore_carrito')) || [];
             
-            // Verificar si ya existe para sumar cantidad (opcional pero recomendado)
             const existente = cart.find(item => item.nombre === nombre);
             if (existente) {
                 existente.cantidad += 1;
@@ -134,16 +125,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 cart.push({ 
                     nombre, 
                     marca, 
-                    precio: precioNumerico, // GUARDAMOS NÚMERO, NO TEXTO
+                    precio: precioNumerico,
                     cantidad: 1, 
                     imagen: imagenLimpia, 
-                    tipo: categoria
+                    tipo: 'producto' 
                 });
             }
             
             localStorage.setItem('amore_carrito', JSON.stringify(cart));
             actualizarNotificacionCarrito();
-            mostrarNotificacionIndex("¡Añadido a la bolsa!");
+            mostrarNotificacionIndex("✨ ¡Añadido a la bolsa!");
             modal.remove();
         };
 
@@ -152,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
         };
     }
-    window.abrirModalInteligente = abrirModalInteligente;
 
     function mostrarNotificacionIndex(mensaje) {
         const notif = document.createElement('div');
@@ -209,102 +199,106 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 20000);
     }
 
-// ===== NAVEGACIÓN ÍNDICE - MENÚ HAMBURGUESA =====
-const menuToggle = document.getElementById('menu-toggle');
-const navIndice = document.getElementById('nav-indice');
-const navLinks = document.querySelectorAll('.nav-indice a');
+    // ===== NAVEGACIÓN ÍNDICE - MENÚ HAMBURGUESA =====
+    function inicializarNavegacionIndice() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const navIndice = document.getElementById('nav-indice');
+        const navLinks = document.querySelectorAll('.nav-indice a');
 
-// Crear overlay dinámicamente
-let overlay = document.querySelector('.nav-overlay');
-if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'nav-overlay';
-    document.body.appendChild(overlay);
-}
+        if (!menuToggle || !navIndice) {
+            console.log('Menú hamburguesa no encontrado en el HTML');
+            return;
+        }
 
-// Toggle del menú al hacer click en el botón hamburguesa
-if (menuToggle && navIndice) {
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menuToggle.classList.toggle('active');
-        navIndice.classList.toggle('open');
-        overlay.classList.toggle('show');
-    });
-}
+        // Crear overlay dinámicamente
+        let overlay = document.querySelector('.nav-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'nav-overlay';
+            document.body.appendChild(overlay);
+        }
 
-// 🔧 CLAVE: Cerrar menú Y navegar a la sección al hacer click en un enlace
+        // Toggle del menú al hacer click en el botón hamburguesa
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuToggle.classList.toggle('active');
+            navIndice.classList.toggle('open');
+            overlay.classList.toggle('show');
+        });
+
+        // Cerrar menú Y navegar a la sección al hacer click en un enlace
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevenir comportamiento default
-        
+        e.preventDefault();
         const href = link.getAttribute('href');
         
-        // Cerrar menú
+        // 1. Cerrar menú inmediatamente
         menuToggle.classList.remove('active');
         navIndice.classList.remove('open');
         overlay.classList.remove('show');
         
-        // Navegar a la sección con scroll suave
+        // 2. Navegar a la sección
         if (href && href.startsWith('#')) {
             const targetId = href.substring(1);
             const targetSection = document.getElementById(targetId);
             
             if (targetSection) {
-                // Scroll suave manual con offset para el header sticky
-                const headerOffset = 100;
-                const elementPosition = targetSection.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+                // Esperamos a que el menú termine de cerrarse
+                // transition: right 0.4s ease → 400ms)
+                setTimeout(() => {
+                    // Usamos scrollIntoView: el navegador usará automáticamente
+                    // el scroll-padding-top: 100px que ya tienes en tu CSS
+                    targetSection.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 420); // Un poquito más que la animación del menú (400ms)
             }
         }
     });
 });
 
-// Cerrar menú al hacer click en el overlay
-overlay.addEventListener('click', () => {
-    menuToggle.classList.remove('active');
-    navIndice.classList.remove('open');
-    overlay.classList.remove('show');
-});
+        // Cerrar menú al hacer click en el overlay
+        overlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navIndice.classList.remove('open');
+            overlay.classList.remove('show');
+        });
 
-// Cerrar menú al hacer click fuera
-document.addEventListener('click', (e) => {
-    if (navIndice.classList.contains('open') && 
-        !navIndice.contains(e.target) && 
-        !menuToggle.contains(e.target)) {
-        menuToggle.classList.remove('active');
-        navIndice.classList.remove('open');
-        overlay.classList.remove('show');
-    }
-});
+        // Cerrar menú al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (navIndice.classList.contains('open') && 
+                !navIndice.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                navIndice.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+        });
 
-// Resaltar sección activa al hacer scroll
-const secciones = document.querySelectorAll('section[id]');
+        // Resaltar sección activa al hacer scroll
+        const secciones = document.querySelectorAll('section[id]');
 
-function resaltarSeccionActiva() {
-    const scrollY = window.scrollY + 150;
-    
-    secciones.forEach(seccion => {
-        const seccionTop = seccion.offsetTop;
-        const seccionHeight = seccion.offsetHeight;
-        const seccionId = seccion.getAttribute('id');
-        
-        if (scrollY >= seccionTop && scrollY < seccionTop + seccionHeight) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${seccionId}`) {
-                    link.classList.add('active');
+        function resaltarSeccionActiva() {
+            const scrollY = window.scrollY + 150;
+            
+            secciones.forEach(seccion => {
+                const seccionTop = seccion.offsetTop;
+                const seccionHeight = seccion.offsetHeight;
+                const seccionId = seccion.getAttribute('id');
+                
+                if (scrollY >= seccionTop && scrollY < seccionTop + seccionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${seccionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
                 }
             });
         }
-    });
-}
 
-window.addEventListener('scroll', resaltarSeccionActiva);
-resaltarSeccionActiva();
-
+        window.addEventListener('scroll', resaltarSeccionActiva);
+        resaltarSeccionActiva();
+    }
 });
