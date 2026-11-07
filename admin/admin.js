@@ -12,15 +12,16 @@ let canalPedidos = null;
 
 /* ==================== IMÁGENES ==================== */
 
-// El panel vive en /admin/, así que una ruta relativa como 'Carteras/...'
-// se resolvería contra admin/Carteras/ (404). Se resuelve contra la raíz.
+// El panel se sirve en /admin (sin barra final), así que una ruta relativa
+// como 'Carteras/...' se resolvería contra la raíz del dominio y fallaría.
+// Se fuerza siempre una ruta raíz-relativa.
 // URLs absolutas (incluidas las de Cloudinary) pasan intactas.
 function urlImagenPanel(ruta) {
     const v = (ruta || '').trim();
     if (!v) return '';
     if (/^(https?:)?\/\//i.test(v) || v.startsWith('data:')) return v;
     if (v.startsWith('/')) return v;                                   // ya es raíz-relativa
-    return '../' + v.replace(/^\.\//, '');                             // 'Carteras/x.jpg' → '../Carteras/x.jpg'
+    return '/' + v.replace(/^\.\//, '');                               // 'Carteras/x.jpg' → '/Carteras/x.jpg'
 }
 
 /* ==================== ARRANQUE ==================== */
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     vincularEventos();
+    aplicarBloqueoPendiente();
 
     // ¿Ya hay sesión activa? → dashboard directamente
     const sesion = await sesionActual();
@@ -69,25 +71,144 @@ function mostrarDashboard(email) {
     iniciarRealtimePedidos();
 }
 
+/* ------------------ LÍMITE DE INTENTOS DE ACCESO ------------------ */
+// Bloqueo progresivo tras varios fallos seguidos. Se guarda en localStorage
+// para que recargar la página no reinicie el contador.
+// Es una defensa de interfaz: el límite real de peticiones lo aplica
+// Supabase Auth en el servidor.
+const GUARD_CLAVE = 'amorebox:login-guard';
+const GUARD_MAX_FALLOS = 5;
+const GUARD_ESCALONES = [60, 300, 900, 3600];      // 1 min, 5 min, 15 min, 1 h
+const GUARD_DECADENCIA = 24 * 60 * 60 * 1000;      // olvida el nivel tras 24 h sin fallos
+
+let guardTimer = null;
+
+function leerGuard() {
+    const vacio = { fallos: 0, nivel: 0, hasta: 0, ultimo: 0 };
+    try {
+        const crudo = localStorage.getItem(GUARD_CLAVE);
+        if (!crudo) return vacio;
+        const datos = JSON.parse(crudo) || {};
+        const estado = {
+            fallos: Number(datos.fallos) || 0,
+            nivel: Number(datos.nivel) || 0,
+            hasta: Number(datos.hasta) || 0,
+            ultimo: Number(datos.ultimo) || 0
+        };
+        if (estado.ultimo && Date.now() - estado.ultimo > GUARD_DECADENCIA) return vacio;
+        return estado;
+    } catch (e) {
+        return vacio; // localStorage bloqueado o JSON corrupto
+    }
+}
+
+function escribirGuard(estado) {
+    try { localStorage.setItem(GUARD_CLAVE, JSON.stringify(estado)); } catch (e) { /* modo privado */ }
+}
+
+function segundosBloqueado(estado = leerGuard()) {
+    return Math.max(0, Math.ceil((estado.hasta - Date.now()) / 1000));
+}
+
+function formatearSegundos(total) {
+    const min = Math.floor(total / 60);
+    const seg = total % 60;
+    return min > 0 ? `${min}:${String(seg).padStart(2, '0')}` : `${seg}s`;
+}
+
+function bloquearPorIntentos() {
+    const btn = document.getElementById('btn-login');
+    const error = document.getElementById('login-error');
+    clearInterval(guardTimer);
+
+    const pintar = () => {
+        const restante = segundosBloqueado();
+        if (restante <= 0) {
+            clearInterval(guardTimer);
+            guardTimer = null;
+            btn.disabled = false;
+            btn.textContent = 'Iniciar sesión';
+            error.hidden = true;
+            return;
+        }
+        btn.disabled = true;
+        btn.textContent = `Bloqueado (${formatearSegundos(restante)})`;
+        error.textContent = `Demasiados intentos fallidos. Vuelve a intentarlo en ${formatearSegundos(restante)}.`;
+        error.hidden = false;
+    };
+
+    pintar();
+    if (segundosBloqueado() > 0) guardTimer = setInterval(pintar, 1000);
+}
+
+function aplicarBloqueoPendiente() {
+    if (segundosBloqueado() > 0) bloquearPorIntentos();
+}
+
+// Devuelve true si este fallo activó un bloqueo.
+function registrarFalloDeLogin() {
+    const estado = leerGuard();
+    estado.fallos += 1;
+    estado.ultimo = Date.now();
+
+    if (estado.fallos >= GUARD_MAX_FALLOS) {
+        const indice = Math.min(estado.nivel, GUARD_ESCALONES.length - 1);
+        estado.hasta = Date.now() + GUARD_ESCALONES[indice] * 1000;
+        estado.nivel = Math.min(estado.nivel + 1, GUARD_ESCALONES.length);
+        estado.fallos = 0;
+        escribirGuard(estado);
+        bloquearPorIntentos();
+        return true;
+    }
+
+    escribirGuard(estado);
+    return false;
+}
+
+function reiniciarGuard() {
+    try { localStorage.removeItem(GUARD_CLAVE); } catch (e) { /* modo privado */ }
+    clearInterval(guardTimer);
+    guardTimer = null;
+}
+
 async function manejarLogin(e) {
     e.preventDefault();
     const btn = document.getElementById('btn-login');
     const error = document.getElementById('login-error');
+
+    if (segundosBloqueado() > 0) {
+        bloquearPorIntentos();
+        return;
+    }
+
     error.hidden = true;
     btn.disabled = true;
     btn.textContent = 'Verificando...';
+
     try {
         await iniciarSesionAdmin(
             document.getElementById('login-email').value.trim(),
             document.getElementById('login-pass').value
         );
+        reiniciarGuard();
+        document.getElementById('login-pass').value = '';
         // onAuthStateChange se encarga de mostrar el dashboard
     } catch (err) {
-        error.textContent = 'Credenciales incorrectas: ' + (err.message || 'intenta de nuevo');
+        const mensaje = String((err && err.message) || '');
+        const limiteServidor = (err && err.status === 429) || /rate limit|too many requests/i.test(mensaje);
+
+        if (limiteServidor) {
+            error.textContent = 'Supabase limitó temporalmente los intentos. Espera unos minutos antes de volver a probar.';
+        } else if (!registrarFalloDeLogin()) {
+            const quedan = Math.max(0, GUARD_MAX_FALLOS - leerGuard().fallos);
+            error.textContent = `Correo o contraseña incorrectos. ${quedan === 1 ? 'Te queda 1 intento' : `Te quedan ${quedan} intentos`} antes del bloqueo.`;
+        }
         error.hidden = false;
     } finally {
-        btn.disabled = false;
-        btn.textContent = 'Iniciar sesión';
+        if (segundosBloqueado() <= 0) {
+            btn.disabled = false;
+            btn.textContent = 'Iniciar sesión';
+        }
     }
 }
 

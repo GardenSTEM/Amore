@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amorebox · Panel de Administración</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" href="../Logo/Logo - Gift Amore.png">
-    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" type="image/png" href="/Logo/Logo%20-%20Gift%20Amore.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xjdbvwbqfhtnxajiqbax.supabase.co">
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="stylesheet" href="/admin/admin.css">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap"></noscript>
 </head>
 <body>
 
 <!-- ==================== VISTA: LOGIN ==================== -->
 <div id="vista-login" class="vista visible">
     <div class="login-card">
-        <img src="../Logo/Logo_1.png" alt="Amorebox" class="login-logo">
+        <img src="/Logo/Logo_1.png" alt="Amorebox" class="login-logo" width="300" height="163" fetchpriority="high" decoding="async">
         <h1>Panel de Administración</h1>
         <p class="login-sub">Gestión de carteras y arreglos florales</p>
 
@@ -22,11 +29,11 @@
             <input type="email" id="login-email" placeholder="tu@correo.com" required autocomplete="username">
             <label for="login-pass">Contraseña</label>
             <input type="password" id="login-pass" placeholder="••••••••" required autocomplete="current-password">
-            <p id="login-error" class="login-error" hidden></p>
+            <p id="login-error" class="login-error" role="alert" aria-live="polite" hidden></p>
             <button type="submit" class="btn btn-primario btn-block" id="btn-login">Iniciar sesión</button>
         </form>
 
-        <a href="../index.html" class="login-volver">← Volver a la tienda</a>
+        <a href="/" class="login-volver">← Volver a la tienda</a>
     </div>
 </div>
 
@@ -35,14 +42,14 @@
     <header class="admin-header">
         <div class="admin-header-inner">
             <div class="admin-brand">
-                <img src="../Logo/Logo_1.png" alt="Amorebox" class="admin-logo">
+                <img src="/Logo/Logo_1.png" alt="Amorebox" class="admin-logo" width="300" height="163" decoding="async">
                 <div>
                     <h1>Panel de Administración</h1>
                     <p id="admin-email-sub">Inventario y catálogo</p>
                 </div>
             </div>
             <div class="admin-actions">
-                <a class="btn btn-fantasma" href="../index.html">Ver tienda</a>
+                <a class="btn btn-fantasma" href="/">Ver tienda</a>
                 <button class="btn btn-fantasma" id="btn-cerrar-sesion">Cerrar sesión</button>
             </div>
         </div>
@@ -217,10 +224,10 @@
 <div id="toast" class="toast" hidden></div>
 
 <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-config.js"></script>
-<script src="../js/supabase-config.js"></script>
-<script src="../js/supabase-api.js"></script>
-<script src="admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="/supabase-config.js" defer></script>
+<script src="/js/supabase-config.js" defer></script>
+<script src="/js/supabase-api.js" defer></script>
+<script src="/admin/admin.js" defer></script>
 </body>
 </html>

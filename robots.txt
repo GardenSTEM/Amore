@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Panel privado y archivos internos
-Disallow: /admin/
+Disallow: /admin
 Disallow: /supabase/
 Disallow: /scripts/
 Disallow: /node_modules/

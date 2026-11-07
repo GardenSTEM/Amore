@@ -36,7 +36,17 @@
     <meta name="twitter:image" content="https://amoreboxx.com/og/amorebox-home.jpg">
     <meta name="twitter:image:alt" content="Arreglo floral de Amorebox con rosas y flores en tonos rosados">
 
+    <!-- Rendimiento: conexiones tempranas y fuentes sin bloquear el render -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xjdbvwbqfhtnxajiqbax.supabase.co">
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="preload" as="image" href="Logo/Logo_1.png" fetchpriority="high">
+
     <link rel="stylesheet" href="styles.css">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap"></noscript>
     <link rel="icon" type="image/png" href="Logo/Logo - Gift Amore.png">
 
     <script type="application/ld+json">
@@ -57,7 +67,7 @@
           "taxID": "J-508014480",
           "currenciesAccepted": "USD, VES",
           "paymentAccepted": "Pago Móvil, Divisas, Zelle",
-          "priceRange": "$$"
+          "priceRange": "$$",
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "Sambil Paraguaná, local L-13",
@@ -111,7 +121,7 @@
     <nav class="container">
         <div class="header-left">
             <a href="index.html">
-                <img src="Logo/Logo_1.png" class="logo-nav" alt="Amore Logo">
+                <img src="Logo/Logo_1.png" class="logo-nav" alt="Amore Logo" width="300" height="163" fetchpriority="high" decoding="async">
             </a>
         </div>
 
@@ -278,7 +288,7 @@
             </span>
             <div class="categoryImage">
                 <a href="catalogo arreglos.html">
-                <img src="ImgPrincipal/Arreglo_Principal.jpg"  alt="Arreglos">
+                <img src="ImgPrincipal/Arreglo_Principal.jpg" alt="Arreglos" width="900" height="900" decoding="async">
                 </a>
             </div>
         </div>
@@ -291,7 +301,7 @@
             </span>
             <div class="categoryImage">
                 <a href="catalogo carteras.html">
-                <img src="ImgPrincipal/Cartera_Principal.jpg"  alt="Carteras">
+                <img src="ImgPrincipal/Cartera_Principal.jpg" alt="Carteras" width="900" height="900" decoding="async">
                 </a>
             </div>
         </div>
@@ -371,7 +381,7 @@
 
         <div class="tienda-fila" data-price="20">
             <div class="tienda-fila-imagen">
-                <img src="Arreglos de tienda/20261029_173221.jpg" alt="Bouquet de 3 rosas">
+                <img src="Arreglos de tienda/20261029_173221.jpg" alt="Bouquet de 3 rosas" width="480" height="640" loading="lazy" decoding="async">
             </div>
             <div class="tienda-fila-info">
                 <h3>Bouquet de 3 rosas</h3> 
@@ -381,7 +391,7 @@
 
         <div class="tienda-fila" data-price="30">
             <div class="tienda-fila-imagen">
-                <img src="Arreglos de tienda/20260725_105902.jpg" alt="Bouquet de 5 rosas (Especial)">
+                <img src="Arreglos de tienda/20260725_105902.jpg" alt="Bouquet de 5 rosas (Especial)" width="480" height="640" loading="lazy" decoding="async">
             </div>
             <div class="tienda-fila-info">
                 <h3>Bouquet de 5 rosas (Especial)</h3> 
@@ -391,7 +401,7 @@
 
         <div class="tienda-fila" data-price="30">
             <div class="tienda-fila-imagen">
-                <img src="Arreglos de tienda/20260809_145237.jpg" alt="Bouquet de 5 rosas (Redondo)">
+                <img src="Arreglos de tienda/20260809_145237.jpg" alt="Bouquet de 5 rosas (Redondo)" width="480" height="640" loading="lazy" decoding="async">
             </div>
             <div class="tienda-fila-info">
                 <h3>Bouquet de 5 rosas (Redondo)</h3> 
@@ -401,7 +411,7 @@
 
         <div class="tienda-fila" data-price="12">
             <div class="tienda-fila-imagen">
-                <img src="Arreglos de tienda/20261102_173306.jpg" alt="Ramo de 2 rosas">
+                <img src="Arreglos de tienda/20261102_173306.jpg" alt="Ramo de 2 rosas" width="480" height="640" loading="lazy" decoding="async">
             </div>
             <div class="tienda-fila-info">
                 <h3>Ramo de 2 rosas</h3>
@@ -411,7 +421,7 @@
 
         <div class="tienda-fila" data-price="12">
             <div class="tienda-fila-imagen">
-                <img src="Arreglos de tienda/20261102_184421.jpg" alt="Baby bouquet de 3 rosas">
+                <img src="Arreglos de tienda/20261102_184421.jpg" alt="Baby bouquet de 3 rosas" width="480" height="640" loading="lazy" decoding="async">
             </div>
             <div class="tienda-fila-info">
                 <h3>Baby bouquet de 3 rosas</h3>
@@ -421,9 +431,9 @@
         
         <div class="tienda-fila" data-price="6">
             <div class="tienda-fila-imagen">
-                <img src="Arreglos de tienda/20261102_183920.jpg" alt="Una rosa arreglada">
+                <img src="Arreglos de tienda/20261102_183920.jpg" alt="Una rosa arreglada" width="480" height="640" loading="lazy" decoding="async">
             </div>
-            <div clas="tienda-fila-info">
+            <div class="tienda-fila-info">
                 <h3>Una rosa arreglada</h3>
                 <span class="price">$6</span> 
             </div>
@@ -538,11 +548,11 @@
         </div>
     </footer>
 
-<script src="script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/supabase-config.js"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/supabase-api.js"></script>
-<script src="js/catalogo-supabase.js"></script>
+<script src="script.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="/supabase-config.js" defer></script>
+<script src="js/supabase-config.js" defer></script>
+<script src="js/supabase-api.js" defer></script>
+<script src="js/catalogo-supabase.js" defer></script>
 </body>
 </html>

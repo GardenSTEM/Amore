@@ -1,0 +1,301 @@
+/* =============================================================
+   AMOREBOX · PÁGINAS DE ERROR (404 / 500)
+   Estilos compartidos, independientes de styles.css para que las
+   páginas de error carguen rápido y no dependan del resto del sitio.
+   ============================================================= */
+
+:root {
+    --marron-amore: #5B4131;
+    --gris-info: #828282;
+    --rosa-boton: #F3D4B9;
+    --rosa-nav: #FFF9FB;
+    --fuente-elegante: 'Playfair Display', serif;
+    --fuente-limpia: 'Lato', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--fuente-limpia);
+    color: var(--marron-amore);
+    background-color: var(--rosa-nav);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===== CABECERA ===== */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--rosa-nav);
+    border-bottom: 1px solid rgba(91, 65, 49, 0.08);
+}
+
+.site-header .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.logo {
+    height: 64px;
+    width: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover,
+.logo:focus-visible {
+    transform: scale(1.03);
+}
+
+.header-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.header-links a {
+    color: var(--marron-amore);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+}
+
+.header-links a:hover,
+.header-links a:focus-visible {
+    color: #c98b5e;
+}
+
+/* ===== CONTENIDO ===== */
+.error-main {
+    position: relative;
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: 48px 20px 64px;
+    overflow: hidden;
+}
+
+/* Halo decorativo detrás del código de error */
+.error-main::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(80vw, 640px);
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(243, 212, 185, 0.55) 0%, rgba(243, 212, 185, 0) 70%);
+    pointer-events: none;
+}
+
+.error-card {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+    animation: fadeInUp 0.55s ease both;
+}
+
+.error-code {
+    margin: 0;
+    font-family: var(--fuente-elegante);
+    font-size: clamp(4.5rem, 16vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--rosa-boton);
+    text-shadow: 0 6px 0 rgba(91, 65, 49, 0.05);
+}
+
+.error-kicker {
+    margin: 10px 0 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gris-info);
+}
+
+.error-title {
+    margin: 0 0 14px;
+    font-family: var(--fuente-elegante);
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    line-height: 1.2;
+}
+
+.error-text {
+    max-width: 520px;
+    margin: 0 auto 30px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #6b5a4c;
+}
+
+/* ===== BOTONES ===== */
+.error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    font-family: var(--fuente-elegante);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-primario {
+    background-color: var(--rosa-boton);
+    color: var(--marron-amore);
+}
+
+.btn-primario:hover,
+.btn-primario:focus-visible {
+    background-color: #f8bd79;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(248, 189, 121, 0.4);
+}
+
+.btn-fantasma {
+    background-color: transparent;
+    border-color: var(--rosa-boton);
+    color: var(--marron-amore);
+}
+
+.btn-fantasma:hover,
+.btn-fantasma:focus-visible {
+    background-color: rgba(243, 212, 185, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn:focus-visible,
+.header-links a:focus-visible,
+.logo:focus-visible {
+    outline: 3px solid #f8bd79;
+    outline-offset: 3px;
+}
+
+.error-hint {
+    margin: 30px 0 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--gris-info);
+}
+
+.error-hint a {
+    color: var(--marron-amore);
+    font-weight: 700;
+}
+
+/* ===== PIE ===== */
+.site-footer {
+    background-color: #fff;
+    border-top: 1px solid rgba(91, 65, 49, 0.1);
+}
+
+.site-footer .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.site-footer h2 {
+    margin: 0;
+    font-family: var(--fuente-elegante);
+    font-size: 1rem;
+}
+
+.site-footer p {
+    margin: 3px 0 0;
+    font-size: 0.78rem;
+    color: var(--gris-info);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+    .header-links {
+        display: none;
+    }
+
+    .logo {
+        height: 54px;
+    }
+
+    .error-main {
+        padding: 36px 18px 48px;
+    }
+
+    .error-actions {
+        flex-direction: column;
+    }
+
+    .error-actions .btn {
+        width: 100%;
+    }
+
+    .site-footer .container {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .error-card {
+        animation: none;
+    }
+
+    .btn:hover,
+    .btn:focus-visible,
+    .logo:hover {
+        transform: none;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
