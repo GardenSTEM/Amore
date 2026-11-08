@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             localStorage.setItem('amore_carrito', JSON.stringify(cart));
             actualizarNotificacionCarrito();
-            mostrarNotificacionIndex("✨ ¡Añadido a la bolsa!");
+            mostrarNotificacionIndex("¡Añadido a la bolsa!");
             modal.remove();
         };
 

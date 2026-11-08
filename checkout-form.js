@@ -845,7 +845,7 @@ function construirMensajeWhatsApp(datos) {
     
     // ===== DEDICATORIAS =====
     if (datos.dedicatoriaCatalogo) {
-        mensaje += `\n *DEDICATORIA (Arreglo):*\n"${datos.dedicatoriaCatalogo}"\n`;
+        mensaje += `\n *DEDICATORIA (Arreglo de catálogo):*\n"${datos.dedicatoriaCatalogo}"\n`;
     }
     if (datos.dedicatoriaTienda) {
         mensaje += `\n *DEDICATORIA (Arreglo de tienda):*\n"${datos.dedicatoriaTienda}"\n`;
@@ -869,7 +869,7 @@ function construirMensajeWhatsApp(datos) {
         }
     }
     
-    mensaje += `\n¡Gracias por tu compra! 🌸`;
+    mensaje += `\n¡Gracias! 🌸`;
     
     return mensaje;
 }
