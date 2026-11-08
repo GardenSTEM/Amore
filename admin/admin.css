@@ -195,7 +195,7 @@ box-shadow: var(--shadow-soft);
 overflow-x: auto;
 -webkit-overflow-scrolling: touch;
 }
-.tabla-productos { width: 100%; border-collapse: collapse; min-width: 800px; }
+.tabla-productos { width: 100%; border-collapse: collapse; min-width: 860px; }
 .tabla-productos th {
 font-family: var(--fuente-elegante);
 text-align: left;
@@ -236,6 +236,7 @@ text-transform: uppercase;
 }
 .tag-cartera { background: rgba(154, 208, 173, 0.25); color: #2e5c41; }
 .tag-arreglo { background: rgba(247, 168, 205, 0.2); color: #9c5577; }
+.tag-tienda { background: rgba(243, 212, 185, 0.4); color: #8a5a34; }
 .cargando, .sin-resultados { text-align: center; color: var(--gris-info); padding: 30px !important; }
 .stock-chip { font-weight: 700; }
 .stock-0 { color: var(--rojo-peligro); }

@@ -25,9 +25,14 @@ CREATE TABLE IF NOT EXISTS public.productos (
     imagen_url     TEXT NOT NULL DEFAULT '', -- URL pública optimizada de Cloudinary
     stock          INTEGER NOT NULL DEFAULT 1 CHECK (stock >= 0),
     destacado      BOOLEAN NOT NULL DEFAULT false,
+    en_tienda      BOOLEAN NOT NULL DEFAULT false,
     created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Migración segura para bases de datos creadas antes de existir `en_tienda`
+ALTER TABLE public.productos
+    ADD COLUMN IF NOT EXISTS en_tienda BOOLEAN NOT NULL DEFAULT false;
 
 COMMENT ON TABLE public.productos IS 'Catálogo de carteras y arreglos florales de Amorebox';
 
