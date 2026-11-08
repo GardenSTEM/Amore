@@ -84,3 +84,17 @@ INSERT INTO public.productos (categoria, nombre, descripcion, marca, precio, ima
 ('arreglo', 'Rosa eterna de tallo largo', 'Rosa eterna de tallo largo.', NULL, 20, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1793661930/amorebox/catalogo/Arreglos/image38.jpg', 10, false)
 
 ON CONFLICT DO NOTHING;
+
+-- ============ ARREGLOS DE TIENDA (6) ============
+-- Se muestran en la sección "Arreglos de tienda" del index y también
+-- se administran desde el panel con la casilla `en_tienda`.
+INSERT INTO public.productos
+    (categoria, nombre, descripcion, marca, precio, imagen_url, stock, destacado, en_tienda)
+VALUES
+    ('arreglo', 'Bouquet de 3 rosas', '', NULL, 20, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1794098479/amorebox/catalogo/Arreglos%20de%20tienda/20261029_173221.jpg', 10, false, true),
+    ('arreglo', 'Bouquet de 5 rosas (Especial)', '', NULL, 30, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1794098480/amorebox/catalogo/Arreglos%20de%20tienda/20260725_105902.jpg', 10, false, true),
+    ('arreglo', 'Bouquet de 5 rosas (Redondo)', '', NULL, 30, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1794098480/amorebox/catalogo/Arreglos%20de%20tienda/20260809_145237.jpg', 10, false, true),
+    ('arreglo', 'Ramo de 2 rosas', '', NULL, 12, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1794098481/amorebox/catalogo/Arreglos%20de%20tienda/20261102_173306.jpg', 10, false, true),
+    ('arreglo', 'Baby bouquet de 3 rosas', '', NULL, 12, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1794098481/amorebox/catalogo/Arreglos%20de%20tienda/20261102_184421.jpg', 10, false, true),
+    ('arreglo', 'Una rosa arreglada', '', NULL, 6, 'https://res.cloudinary.com/g8hh4hop/image/upload/f_auto,q_auto,w_900,c_limit/v1794098482/amorebox/catalogo/Arreglos%20de%20tienda/20261102_183920.jpg', 10, false, true)
+ON CONFLICT DO NOTHING;

@@ -144,6 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // El catálogo dinámico (js/catalogo-supabase.js) construye tarjetas nuevas
+    // después de este DOMContentLoaded, así que necesita acceso global.
+    window.abrirModalInteligente = abrirModalInteligente;
+
     function mostrarNotificacionIndex(mensaje) {
         const notif = document.createElement('div');
         notif.innerText = mensaje;

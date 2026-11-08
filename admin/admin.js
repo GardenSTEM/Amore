@@ -245,7 +245,7 @@ function renderizarTabla() {
     const lista = productosFiltrados();
 
     if (!lista.length) {
-        body.innerHTML = '<tr><td colspan="7" class="sin-resultados">No hay productos que coincidan.</td></tr>';
+        body.innerHTML = '<tr><td colspan="8" class="sin-resultados">No hay productos que coincidan.</td></tr>';
         return;
     }
 
@@ -272,6 +272,7 @@ function renderizarTabla() {
             <td>${formatearPrecioAmore(p.precio) || 'A consultar'}</td>
             <td><span class="stock-chip ${stockClass}">${stockTxt}</span></td>
             <td>${p.destacado ? '<span class="destacado-estrella">★</span>' : '<span class="destacado-no">☆</span>'}</td>
+            <td>${p.en_tienda ? '<span class="tag-categoria tag-tienda">tienda</span>' : '<span class="destacado-no">—</span>'}</td>
             <td>
                 <div class="acciones">
                     <button class="btn btn-fantasma btn-chico" onclick="abrirFormEditar('${p.id}')">Editar</button>
@@ -304,6 +305,9 @@ function abrirFormNuevo() {
     document.getElementById('p-id').value = '';
     document.getElementById('p-stock').value = '1';
     document.getElementById('p-imagen-file').value = '';
+    document.getElementById('p-destacado').checked = false;
+    document.getElementById('p-en-tienda').checked = false;
+    actualizarCheckboxTienda();
     document.getElementById('form-error').hidden = true;
     abrirModal('modal-form');
 }
@@ -322,8 +326,18 @@ function abrirFormEditar(id) {
     document.getElementById('p-stock').value = p.stock;
     document.getElementById('p-imagen-file').value = '';
     document.getElementById('p-destacado').checked = !!p.destacado;
+    document.getElementById('p-en-tienda').checked = !!p.en_tienda;
+    actualizarCheckboxTienda();
     document.getElementById('form-error').hidden = true;
     abrirModal('modal-form');
+}
+
+// La sección «Arreglos de tienda» solo admite arreglos florales.
+function actualizarCheckboxTienda() {
+    const esArreglo = document.getElementById('p-categoria').value === 'arreglo';
+    const checkbox = document.getElementById('p-en-tienda');
+    checkbox.disabled = !esArreglo;
+    if (!esArreglo) checkbox.checked = false;
 }
 
 async function manejarGuardarProducto(e) {
@@ -342,7 +356,8 @@ async function manejarGuardarProducto(e) {
         marca: document.getElementById('p-marca').value.trim() || null,
         precio: document.getElementById('p-precio').value === '' ? null : Number(document.getElementById('p-precio').value),
         stock: parseInt(document.getElementById('p-stock').value, 10) || 0,
-        destacado: document.getElementById('p-destacado').checked
+        destacado: document.getElementById('p-destacado').checked,
+        en_tienda: document.getElementById('p-en-tienda').checked
     };
 
     if (!producto.nombre) {
@@ -444,6 +459,7 @@ function vincularEventos() {
     document.getElementById('btn-cerrar-sesion').addEventListener('click', manejarLogout);
     document.getElementById('btn-nuevo').addEventListener('click', abrirFormNuevo);
     document.getElementById('form-producto').addEventListener('submit', manejarGuardarProducto);
+    document.getElementById('p-categoria').addEventListener('change', actualizarCheckboxTienda);
     document.getElementById('btn-confirmar-borrar').addEventListener('click', confirmarBorrado);
 
     document.getElementById('buscador').addEventListener('input', (e) => {

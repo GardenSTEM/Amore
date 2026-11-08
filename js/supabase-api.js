@@ -27,6 +27,19 @@ async function obtenerDestacados(limite = 6) {
     return data || [];
 }
 
+// Devuelve los productos marcados para la sección "Arreglos de tienda" del index
+async function obtenerArreglosTienda(limite = 12) {
+    const { data, error } = await _sb
+        .from('productos')
+        .select('*')
+        .eq('categoria', 'arreglo')
+        .eq('en_tienda', true)
+        .order('nombre', { ascending: true })
+        .limit(limite);
+    if (error) { console.error('obtenerArreglosTienda:', error.message); throw error; }
+    return data || [];
+}
+
 /* ------------------------- CREAR ------------------------- */
 
 async function crearProducto(producto) {

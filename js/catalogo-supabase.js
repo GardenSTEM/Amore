@@ -24,22 +24,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        let productos = [];
         if (esIndex) {
-            productos = await obtenerDestacados(6);
-            if (!productos.length) productos = (await obtenerProductos(null)).slice(0, 6);
-            renderizarIndex(productos);
+            await cargarSeccionesIndex();
         } else {
-            productos = await obtenerProductos(categoria);
-            renderizarCatalogo(grid, productos);
+            renderizarCatalogo(grid, await obtenerProductos(categoria));
         }
 
         // ---- TIEMPO REAL: refrescar cuando el admin cambie algo ----
         suscribirseAProductos(async () => {
             if (esIndex) {
-                let dest = await obtenerDestacados(6);
-                if (!dest.length) dest = (await obtenerProductos(null)).slice(0, 6);
-                renderizarIndex(dest);
+                await cargarSeccionesIndex();
             } else {
                 renderizarCatalogo(grid, await obtenerProductos(categoria));
             }
@@ -49,6 +43,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         mostrarEstadoCatalogo(contenedor, 'No se pudieron cargar los productos. Inténtalo más tarde.');
     }
 });
+
+// Carga (y refresca) las dos secciones dinámicas del index:
+// "Lo más vendido" y "Arreglos de tienda".
+async function cargarSeccionesIndex() {
+    let productos = await obtenerDestacados(6);
+    if (!productos.length) productos = (await obtenerProductos(null)).slice(0, 6);
+    renderizarIndex(productos);
+
+    try {
+        renderizarArreglosTienda(await obtenerArreglosTienda());
+    } catch (err) {
+        // Si la columna `en_tienda` todavía no existe en la BD, se conserva
+        // el HTML estático de la sección como respaldo.
+        console.warn('[Amorebox] No se pudieron cargar los arreglos de tienda:', err.message);
+    }
+}
 
 function mostrarEstadoCatalogo(contenedor, mensaje) {
     if (!contenedor) return;
@@ -134,5 +144,84 @@ function renderizarIndex(productos) {
             }
         });
     });
+}
+
+/* ------------------- ARREGLOS DE TIENDA (INDEX) ---------------- */
+
+function renderizarArreglosTienda(productos) {
+    const contenedor = document.querySelector('.tienda-filas');
+    if (!contenedor) return;
+
+    contenedor.replaceChildren();
+    if (!productos.length) {
+        const vacio = document.createElement('p');
+        vacio.className = 'arreglos-tienda-vacio';
+        vacio.textContent = 'No hay arreglos de tienda disponibles en este momento.';
+        contenedor.appendChild(vacio);
+        return;
+    }
+
+    const frag = document.createDocumentFragment();
+    productos.forEach(p => frag.appendChild(crearFilaTienda(p)));
+    contenedor.appendChild(frag);
+}
+
+// Misma estructura que el HTML estático: .tienda-fila > imagen + info
+function crearFilaTienda(p) {
+    const fila = document.createElement('div');
+    fila.className = 'tienda-fila';
+    fila.setAttribute('data-price', p.precio ?? '');
+    fila.dataset.id = p.id || '';
+
+    const imagenWrap = document.createElement('div');
+    imagenWrap.className = 'tienda-fila-imagen';
+
+    const img = document.createElement('img');
+    const ruta = (typeof limpiarRutaImagen === 'function') ? limpiarRutaImagen(p.imagen_url) : p.imagen_url;
+    const rutaOriginal = p.imagen_url || '';
+    if (ruta && ruta.includes('/image/upload/')) {
+        img.src = urlImagenCloudinary(ruta, 480);
+        img.srcset = [
+            `${urlImagenCloudinary(ruta, 300)} 300w`,
+            `${urlImagenCloudinary(ruta, 480)} 480w`,
+            `${urlImagenCloudinary(ruta, 900)} 900w`
+        ].join(', ');
+        img.sizes = '(max-width: 768px) 45vw, 160px';
+    } else {
+        img.src = ruta || '';
+    }
+    img.alt = p.nombre || '';
+    img.width = 480;
+    img.height = 640;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    imagenWrap.appendChild(img);
+
+    const info = document.createElement('div');
+    info.className = 'tienda-fila-info';
+    const h3 = document.createElement('h3');
+    h3.textContent = p.nombre || '';
+    const precio = document.createElement('span');
+    precio.className = 'price';
+    precio.textContent = formatearPrecioAmore(p.precio);
+    info.appendChild(h3);
+    info.appendChild(precio);
+
+    fila.appendChild(imagenWrap);
+    fila.appendChild(info);
+
+    fila.addEventListener('click', () => {
+        if (typeof window.abrirModalInteligente === 'function') {
+            window.abrirModalInteligente(
+                p.nombre || '',
+                'Arreglo de tienda',
+                formatearPrecioAmore(p.precio),
+                Number(p.precio) || 0,
+                rutaOriginal
+            );
+        }
+    });
+
+    return fila;
 }
 
