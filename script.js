@@ -1,5 +1,4 @@
 const WHATSAPP_NUMERO = "584126691482";
-
 function limpiarRutaImagen(ruta) {
     if (!ruta) return ruta;
     let limpia = ruta.trim();
@@ -7,7 +6,6 @@ function limpiarRutaImagen(ruta) {
     limpia = limpia.replace(/([^:])\/\//g, "$1/");
     return limpia;
 }
-
 function limpiarPrecio(precioTexto) {
     if (!precioTexto) return 0;
     const limpio = precioTexto.toString().replace(/[^0-9.,]/g, '').replace(',', '.');
@@ -18,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizarNotificacionCarrito();
     moverInfoBar();
     rotarMasVendidos();
-    inicializarNavegacionIndice(); // 👈 NUEVO: inicializa el menú hamburguesa
+    inicializarNavegacionIndice();
 
     // ===== MODAL PARA "LO MÁS VENDIDO" (.product-card) =====
     const productosIndex = document.querySelectorAll('.product-card');
@@ -29,13 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const precioTexto = card.querySelector('.price')?.innerText || "$0";
             const imagen = card.querySelector('img')?.src || "";
             const precioNumerico = limpiarPrecio(precioTexto);
-            
             let marca = "Amore Collection";
             const posibleMarca = card.querySelector('p:not(.price)');
             if (posibleMarca && posibleMarca.innerText !== nombre) {
                 marca = posibleMarca.innerText;
             }
-            
             abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
         });
     });
@@ -50,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const imagen = card.querySelector('img')?.src || "";
             const precioNumerico = limpiarPrecio(precioTexto);
             const marca = "Arreglo de tienda";
-            
             abrirModalInteligente(nombre, marca, precioTexto, precioNumerico, imagen);
         });
     });
@@ -94,9 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const modal = document.createElement('div');
         modal.id = 'amore-modal-root';
-        
         const imagenLimpia = limpiarRutaImagen(imagen);
-        
+
         modal.innerHTML = `
             <div class="modal-card">
                 <span class="close-x" id="close-modal">&times;</span>
@@ -117,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('add-to-bag').onclick = () => {
             const cart = JSON.parse(localStorage.getItem('amore_carrito')) || [];
-            
             const existente = cart.find(item => item.nombre === nombre);
             if (existente) {
                 existente.cantidad += 1;
@@ -131,21 +124,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     tipo: 'producto' 
                 });
             }
-            
             localStorage.setItem('amore_carrito', JSON.stringify(cart));
             actualizarNotificacionCarrito();
             mostrarNotificacionIndex("✨ ¡Añadido a la bolsa!");
             modal.remove();
         };
 
+        // Abre el formulario de checkout
         document.getElementById('buy-now').onclick = () => {
-            const msg = `*NUEVO PEDIDO AMORE*\n\nHola, feliz día! Me interesa este producto:\n\n▪️ *${nombre}*\n▫️ Marca: ${marca}\n▫️ Cantidad: 1\n▫️ Precio: ${precioTexto}\n\n📍 _Por favor, podría indicarme disponibilidad._`;
-            window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+            modal.remove();
+            abrirFormularioCompra({
+                tipo: 'directa',
+                producto: {
+                    nombre: nombre,
+                    marca: marca,
+                    precio: precioNumerico,
+                    imagen: imagenLimpia,
+                    tipo: 'producto'
+                }
+            });
         };
     }
 
-    // El catálogo dinámico (js/catalogo-supabase.js) construye tarjetas nuevas
-    // después de este DOMContentLoaded, así que necesita acceso global.
     window.abrirModalInteligente = abrirModalInteligente;
 
     function mostrarNotificacionIndex(mensaje) {
@@ -214,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Crear overlay dinámicamente
         let overlay = document.querySelector('.nav-overlay');
         if (!overlay) {
             overlay = document.createElement('div');
@@ -222,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(overlay);
         }
 
-        // Toggle del menú al hacer click en el botón hamburguesa
         menuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             menuToggle.classList.toggle('active');
@@ -230,46 +228,34 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.classList.toggle('show');
         });
 
-        // Cerrar menú Y navegar a la sección al hacer click en un enlace
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const href = link.getAttribute('href');
-        
-        // 1. Cerrar menú inmediatamente
-        menuToggle.classList.remove('active');
-        navIndice.classList.remove('open');
-        overlay.classList.remove('show');
-        
-        // 2. Navegar a la sección
-        if (href && href.startsWith('#')) {
-            const targetId = href.substring(1);
-            const targetSection = document.getElementById(targetId);
-            
-            if (targetSection) {
-                // Esperamos a que el menú termine de cerrarse
-                // transition: right 0.4s ease → 400ms)
-                setTimeout(() => {
-                    // Usamos scrollIntoView: el navegador usará automáticamente
-                    // el scroll-padding-top: 100px que ya tienes en tu CSS
-                    targetSection.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }, 420); // Un poquito más que la animación del menú (400ms)
-            }
-        }
-    });
-});
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                menuToggle.classList.remove('active');
+                navIndice.classList.remove('open');
+                overlay.classList.remove('show');
+                if (href && href.startsWith('#')) {
+                    const targetId = href.substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        setTimeout(() => {
+                            targetSection.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start' 
+                            });
+                        }, 420);
+                    }
+                }
+            });
+        });
 
-        // Cerrar menú al hacer click en el overlay
         overlay.addEventListener('click', () => {
             menuToggle.classList.remove('active');
             navIndice.classList.remove('open');
             overlay.classList.remove('show');
         });
 
-        // Cerrar menú al hacer click fuera
         document.addEventListener('click', (e) => {
             if (navIndice.classList.contains('open') && 
                 !navIndice.contains(e.target) && 
@@ -280,17 +266,13 @@ navLinks.forEach(link => {
             }
         });
 
-        // Resaltar sección activa al hacer scroll
         const secciones = document.querySelectorAll('section[id]');
-
         function resaltarSeccionActiva() {
             const scrollY = window.scrollY + 150;
-            
             secciones.forEach(seccion => {
                 const seccionTop = seccion.offsetTop;
                 const seccionHeight = seccion.offsetHeight;
                 const seccionId = seccion.getAttribute('id');
-                
                 if (scrollY >= seccionTop && scrollY < seccionTop + seccionHeight) {
                     navLinks.forEach(link => {
                         link.classList.remove('active');
@@ -301,7 +283,6 @@ navLinks.forEach(link => {
                 }
             });
         }
-
         window.addEventListener('scroll', resaltarSeccionActiva);
         resaltarSeccionActiva();
     }
