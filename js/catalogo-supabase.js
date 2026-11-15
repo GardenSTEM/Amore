@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (esIndex) {
             await cargarSeccionesIndex();
         } else {
-            renderizarCatalogo(grid, await obtenerProductos(categoria));
+            renderizarCatalogo(grid, await obtenerProductos(categoria, true));
         }
 
         // ---- TIEMPO REAL: refrescar cuando el admin cambie algo ----
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (esIndex) {
                 await cargarSeccionesIndex();
             } else {
-                renderizarCatalogo(grid, await obtenerProductos(categoria));
+                renderizarCatalogo(grid, await obtenerProductos(categoria, true));
             }
         });
     } catch (err) {
@@ -47,8 +47,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Carga (y refresca) las dos secciones dinámicas del index:
 // "Lo más vendido" y "Arreglos de tienda".
 async function cargarSeccionesIndex() {
-    let productos = await obtenerDestacados(6);
-    if (!productos.length) productos = (await obtenerProductos(null)).slice(0, 6);
+    // Los arreglos «de tienda» quedan fuera de «Lo más vendido»: solo se
+    // muestran en su propia sección (más abajo en el index).
+    let productos = await obtenerDestacados(6, true);
+    if (!productos.length) productos = (await obtenerProductos(null, true)).slice(0, 6);
     renderizarIndex(productos);
 
     try {

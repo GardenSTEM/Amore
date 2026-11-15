@@ -7,24 +7,30 @@
 /* ------------------------- LECTURA ------------------------- */
 
 // Devuelve todos los productos. categoria: 'cartera' | 'arreglo' | null (todos)
-async function obtenerProductos(categoria = null) {
+// excluirTienda: true deja fuera los arreglos marcados como «de tienda», que
+// solo deben verse en la sección «Arreglos de tienda» del index.
+async function obtenerProductos(categoria = null, excluirTienda = false) {
     let query = _sb.from('productos').select('*').order('nombre', { ascending: true });
     if (categoria) query = query.eq('categoria', categoria);
     const { data, error } = await query;
     if (error) { console.error('obtenerProductos:', error.message); throw error; }
-    return data || [];
+    const productos = data || [];
+    return excluirTienda ? productos.filter(p => p.en_tienda !== true) : productos;
 }
 
-// Devuelve solo los productos destacados ("Lo más vendido" del index)
-async function obtenerDestacados(limite = 6) {
+// Devuelve solo los productos destacados ("Lo más vendido" del index).
+// excluirTienda: true deja fuera los arreglos «de tienda» (igual que el catálogo).
+async function obtenerDestacados(limite = 6, excluirTienda = false) {
     const { data, error } = await _sb
         .from('productos')
         .select('*')
         .eq('destacado', true)
-        .order('nombre', { ascending: true })
-        .limit(limite);
+        .order('nombre', { ascending: true });
     if (error) { console.error('obtenerDestacados:', error.message); throw error; }
-    return data || [];
+    const productos = data || [];
+    // Se filtra antes de recortar para que el límite cuente solo los visibles.
+    const visibles = excluirTienda ? productos.filter(p => p.en_tienda !== true) : productos;
+    return visibles.slice(0, limite);
 }
 
 // Devuelve los productos marcados para la sección "Arreglos de tienda" del index
