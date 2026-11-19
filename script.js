@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     moverInfoBar();
     rotarMasVendidos();
     inicializarNavegacionIndice();
+    inicializarAnimacionesScroll();
 
     // ===== MODAL PARA "LO MÁS VENDIDO" (.product-card) =====
     const productosIndex = document.querySelectorAll('.product-card');
@@ -285,5 +286,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         window.addEventListener('scroll', resaltarSeccionActiva);
         resaltarSeccionActiva();
+    }
+
+    // ===== ANIMACIONES DE SCROLL (REVELADO PROGRESIVO) =====
+    function inicializarAnimacionesScroll() {
+        const prefiereMenosMovimiento = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Si el navegador no soporta IntersectionObserver o el usuario pide
+        // menos movimiento, se deja el contenido tal cual, sin animación.
+        if (prefiereMenosMovimiento || !('IntersectionObserver' in window)) return;
+
+        const bloques = [
+            document.querySelector('#categorias .category-row'),
+            document.querySelector('#categorias .category-row-reverse'),
+            document.querySelector('#mas-vendidos .section-title'),
+            document.querySelector('#arreglos-tienda h2'),
+            document.querySelector('.arreglos-tienda-subtitle'),
+            document.querySelector('#condiciones .section-title'),
+            document.querySelector('.location-info'),
+            document.querySelector('.location-map'),
+            document.querySelector('.footer-content')
+        ].filter(Boolean);
+
+        const grupos = [
+            document.querySelector('.products-grid'),
+            document.querySelector('#arreglos-tienda .tienda-filas'),
+            document.querySelector('.Conditions-flowers-container'),
+            document.querySelector('.Conditions-bags-container')
+        ].filter(Boolean);
+
+        bloques.forEach(el => el.classList.add('reveal'));
+        grupos.forEach(el => el.classList.add('reveal-children'));
+
+        const observer = new IntersectionObserver((entradas) => {
+            entradas.forEach(entrada => {
+                if (!entrada.isIntersecting) return;
+                entrada.target.classList.add('is-visible');
+                observer.unobserve(entrada.target);
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+        [...bloques, ...grupos].forEach(el => observer.observe(el));
     }
 });

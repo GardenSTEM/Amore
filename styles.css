@@ -1216,3 +1216,72 @@ border: 0;
         font-size: 1 rem;
     }
 }
+
+/* ===== ANIMACIONES DE SCROLL (INDEX) ===== */
+/* Se activan por JS añadiendo .reveal / .reveal-children, así el contenido
+   queda visible si JavaScript no está disponible. */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+/* Las filas de categorías ya tenían su animación de entrada (fadeInUp):
+   se sustituye por la revelación al hacer scroll para que no se dupliquen. */
+.reveal.category-row,
+.reveal.category-row-reverse {
+    animation: none;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: auto;
+}
+
+/* Aparición escalonada de los elementos internos (tarjetas de producto,
+   arreglos de tienda y burbujas de condiciones). Solo se anima la opacidad
+   para no interferir con los efectos hover ya existentes. */
+.reveal-children > * {
+    opacity: 0;
+}
+
+.reveal-children.is-visible > * {
+    animation: revealScrollChild 0.7s ease both;
+}
+
+.reveal-children.is-visible > *:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.reveal-children.is-visible > *:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.reveal-children.is-visible > *:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.reveal-children.is-visible > *:nth-child(5) {
+    animation-delay: 0.32s;
+}
+
+.reveal-children.is-visible > *:nth-child(n + 6) {
+    animation-delay: 0.4s;
+}
+
+@keyframes revealScrollChild {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-children > * {
+        opacity: 1;
+        transform: none;
+        transition: none;
+        animation: none;
+    }
+}
